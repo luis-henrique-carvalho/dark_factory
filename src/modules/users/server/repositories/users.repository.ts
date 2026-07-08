@@ -5,8 +5,8 @@ import { randomUUID } from 'node:crypto'
 import {
   createContainsSearchPattern,
   toLimitOffset,
-} from '#/lib/server/list-query'
-import type { ListUsersRequest } from '../contracts'
+} from '#/lib/list-query'
+import type { ListUsersRequest } from '../../contracts'
 
 type UserRow = typeof user.$inferSelect
 type UsersPage = {

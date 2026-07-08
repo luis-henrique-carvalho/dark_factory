@@ -1,16 +1,16 @@
 import { z } from 'zod'
 
-export const createUserFormSchema = z.object({
+export const createUserDto = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
 })
 
-export type CreateUserForm = z.infer<typeof createUserFormSchema>
+export type CreateUserDto = z.infer<typeof createUserDto>
 
-export const updateUserFormSchema = createUserFormSchema
+export const updateUserDto = createUserDto
   .partial()
   .refine((value) => Object.keys(value).length > 0, {
     message: 'At least one field must be provided',
   })
 
-export type UpdateUserForm = z.infer<typeof updateUserFormSchema>
+export type UpdateUserDto = z.infer<typeof updateUserDto>

@@ -1,7 +1,12 @@
-import { UsersRepository } from './users.repository'
-import { EmailAlreadyExistsError, UserNotFoundError } from './users.errors'
-import { createPaginatedResponse } from '#/lib/server/list-query'
-import type { ListUsersRequest } from '../contracts'
+import { UsersRepository } from '../repositories/users.repository'
+import {
+  EmailAlreadyExistsError,
+  UserNotFoundError,
+  mapUniqueEmailConstraint,
+} from '../errors/users.errors'
+import { createPaginatedResponse } from '#/lib/list-query'
+import type { ListUsersRequest } from '../../contracts'
+import type { CreateUserDto, UpdateUserDto } from '../dtos/users.dto'
 
 export class UsersService {
   static async list(params: ListUsersRequest) {
@@ -16,19 +21,21 @@ export class UsersService {
     return user
   }
 
-  static async create(data: { name: string; email: string }) {
+  static async create(data: CreateUserDto) {
     const existing = await UsersRepository.findByEmail(data.email)
 
     if (existing) throw new EmailAlreadyExistsError()
 
-    return await UsersRepository.create({
-      name: data.name,
-      email: data.email,
-      emailVerified: false,
-    })
+    return await mapUniqueEmailConstraint(() =>
+      UsersRepository.create({
+        name: data.name,
+        email: data.email,
+        emailVerified: false,
+      }),
+    )
   }
 
-  static async update(id: string, data: { name?: string; email?: string }) {
+  static async update(id: string, data: UpdateUserDto) {
     const user = await UsersRepository.findById(id)
     if (!user) throw new UserNotFoundError()
 
@@ -37,7 +44,10 @@ export class UsersService {
       if (existing) throw new EmailAlreadyExistsError()
     }
 
-    const updated = await UsersRepository.update(id, data)
+    const updated = await mapUniqueEmailConstraint(() =>
+      UsersRepository.update(id, data),
+    )
+
     if (!updated) throw new UserNotFoundError()
     return updated
   }

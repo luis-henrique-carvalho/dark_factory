@@ -1,11 +1,8 @@
-import { ZodError } from 'zod'
-import { UsersService } from './users.service'
-import { UsersPolicy } from './users.policy'
-import {
-  createUserFormSchema,
-  updateUserFormSchema,
-} from '../schemas'
-import { listUsersRequestSchema } from '../contracts'
+import { UsersService } from '../services/users.service'
+import { handleUsersControllerError } from '../errors/users.error-handler'
+import { UsersPolicy } from '../policies/users.policy'
+import { createUserDto, updateUserDto } from '../dtos/users.dto'
+import { listUsersRequestSchema } from '../../contracts'
 import type { AuthContext } from '#/modules/auth/server/auth-middleware'
 
 export const UsersController = {
@@ -23,15 +20,8 @@ export const UsersController = {
       const response = await UsersService.list(params)
 
       return Response.json(response)
-    } catch (error: any) {
-      if (error instanceof ZodError) {
-        return Response.json({ error: 'Invalid query params' }, { status: 400 })
-      }
-
-      return Response.json(
-        { error: error.message },
-        { status: error.statusCode || 500 },
-      )
+    } catch (error) {
+      return handleUsersControllerError(error, 'Invalid query params')
     }
   },
 
@@ -39,11 +29,8 @@ export const UsersController = {
     try {
       const user = await UsersService.getById(params.userId)
       return Response.json(user)
-    } catch (error: any) {
-      return Response.json(
-        { error: error.message },
-        { status: error.statusCode || 500 },
-      )
+    } catch (error) {
+      return handleUsersControllerError(error, 'Invalid request')
     }
   },
 
@@ -54,15 +41,12 @@ export const UsersController = {
       }
 
       const body = await request.json()
-      const input = createUserFormSchema.parse(body)
+      const input = createUserDto.parse(body)
       const created = await UsersService.create(input)
 
       return Response.json(created, { status: 201 })
-    } catch (error: any) {
-      return Response.json(
-        { error: error.message },
-        { status: error.statusCode || 500 },
-      )
+    } catch (error) {
+      return handleUsersControllerError(error, 'Invalid request body')
     }
   },
 
@@ -79,15 +63,12 @@ export const UsersController = {
       }
 
       const body = await request.json()
-      const input = updateUserFormSchema.parse(body)
+      const input = updateUserDto.parse(body)
       const updated = await UsersService.update(params.userId, input)
 
       return Response.json(updated)
-    } catch (error: any) {
-      return Response.json(
-        { error: error.message },
-        { status: error.statusCode || 500 },
-      )
+    } catch (error) {
+      return handleUsersControllerError(error, 'Invalid request body')
     }
   },
 
@@ -99,22 +80,16 @@ export const UsersController = {
 
       const deleted = await UsersService.delete(params.userId)
       return Response.json(deleted)
-    } catch (error: any) {
-      return Response.json(
-        { error: error.message },
-        { status: error.statusCode || 500 },
-      )
+    } catch (error) {
+      return handleUsersControllerError(error, 'Invalid request')
     }
   },
 
   async handleMe({ context }: { context: AuthContext }) {
     try {
       return Response.json(context.session.user)
-    } catch (error: any) {
-      return Response.json(
-        { error: error.message },
-        { status: error.statusCode || 500 },
-      )
+    } catch (error) {
+      return handleUsersControllerError(error, 'Invalid request')
     }
   },
 }

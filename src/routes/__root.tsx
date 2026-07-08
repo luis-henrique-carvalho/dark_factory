@@ -15,13 +15,6 @@ import appCss from '../styles/index.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
-import { getCookie as getClientCookie } from '#/lib/cookies'
-import { cn } from '#/lib/utils'
-import { LayoutProvider } from '#/context/layout-provider'
-import { SearchProvider } from '#/context/search-provider'
-import { SidebarInset, SidebarProvider } from '#/components/ui/sidebar'
-import { AppSidebar } from '#/components/layout/app-sidebar'
-import { SkipToMain } from '#/components/skip-to-main'
 import { ThemeProvider } from '#/context/theme-provider'
 import { FontProvider } from '#/context/font-provider'
 import { DirectionProvider } from '#/context/direction-provider'
@@ -84,30 +77,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootComponent() {
   const initialTheme = Route.useLoaderData()
-  const defaultOpen = getClientCookie('sidebar_state') !== 'false'
 
   return (
     <RootDocument initialTheme={initialTheme}>
       <ThemeProvider defaultTheme={initialTheme}>
         <FontProvider>
           <DirectionProvider>
-            <SearchProvider>
-              <LayoutProvider>
-                <SidebarProvider defaultOpen={defaultOpen}>
-                  <SkipToMain />
-                  <AppSidebar />
-                  <SidebarInset
-                    className={cn(
-                      '@container/content',
-                      'has-data-[layout=fixed]:h-svh',
-                      'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]',
-                    )}
-                  >
-                    <Outlet />
-                  </SidebarInset>
-                </SidebarProvider>
-              </LayoutProvider>
-            </SearchProvider>
+            <Outlet />
             <Toaster />
           </DirectionProvider>
         </FontProvider>

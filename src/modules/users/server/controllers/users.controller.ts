@@ -3,7 +3,7 @@ import { handleUsersControllerError } from '../errors/users.error-handler'
 import { UsersPolicy } from '../policies/users.policy'
 import { createUserDto, updateUserDto } from '../dtos/users.dto'
 import { listUsersRequestSchema } from '../../contracts'
-import type { AuthContext } from '#/modules/auth/server/auth-middleware'
+import type { AuthContext } from '#/lib/server/auth-middleware'
 
 export const UsersController = {
   async handleList({ request }: { request: Request }) {

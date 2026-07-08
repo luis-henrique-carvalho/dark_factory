@@ -5,7 +5,7 @@ import type { ListUsersRequest } from '#/modules/users/contracts'
 
 export type UsersSearch = ListUsersRequest
 
-export const Route = createFileRoute('/users')({
+export const Route = createFileRoute('/_authenticated/users/')({
   validateSearch: listUsersRequestSchema,
   component: UsersView,
 })

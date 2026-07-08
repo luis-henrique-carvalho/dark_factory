@@ -12,7 +12,7 @@ import { UsersTable } from '../components/users-table'
 import { useUsersList } from '../hooks/use-users'
 import { userUiSchema } from '../data/schema'
 
-const route = getRouteApi('/users')
+const route = getRouteApi('/_authenticated/users/')
 
 export function UsersView() {
   const search = route.useSearch()
@@ -49,7 +49,7 @@ export function UsersView() {
           data={users}
           total={data?.meta.total ?? 0}
           search={search}
-          navigate={navigate}
+          navigate={navigate as any}
           isLoading={isLoading}
         />
       </Main>

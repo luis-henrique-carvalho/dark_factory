@@ -1,5 +1,6 @@
 import { ZodError } from 'zod'
 import { UserError } from './users.errors'
+import { logger } from '#/lib/logger.server'
 
 export function handleUsersControllerError(
   error: unknown,
@@ -24,6 +25,6 @@ export function handleUsersControllerError(
     )
   }
 
-  console.error(error)
+  logger.error('users controller error', { error })
   return Response.json({ error: 'Internal server error' }, { status: 500 })
 }

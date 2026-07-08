@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { UsersController } from '#/modules/users/server'
 import { authMiddleware } from '#/modules/auth/server/auth-middleware'
+import { requestLoggerMiddleware } from '#/lib/request-logger-middleware'
 
 export const Route = createFileRoute('/api/v1/users/')({
   server: {
-    middleware: [authMiddleware],
+    middleware: [requestLoggerMiddleware, authMiddleware],
     handlers: {
       GET: UsersController.handleList,
       POST: UsersController.handleCreate,

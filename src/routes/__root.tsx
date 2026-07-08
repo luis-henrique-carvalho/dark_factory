@@ -5,6 +5,8 @@ import {
   Outlet,
   Link,
 } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+import { getCookie as getServerCookie } from '@tanstack/react-start/server'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
@@ -13,7 +15,7 @@ import appCss from '../styles/index.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
-import { getCookie } from '#/lib/cookies'
+import { getCookie as getClientCookie } from '#/lib/cookies'
 import { cn } from '#/lib/utils'
 import { LayoutProvider } from '#/context/layout-provider'
 import { SearchProvider } from '#/context/search-provider'
@@ -24,12 +26,23 @@ import { ThemeProvider } from '#/context/theme-provider'
 import { FontProvider } from '#/context/font-provider'
 import { DirectionProvider } from '#/context/direction-provider'
 import { Toaster } from '#/components/ui/sonner'
+import type { Theme } from '#/context/theme-provider'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
+function isTheme(value: string | undefined): value is Theme {
+  return value === 'dark' || value === 'light' || value === 'system'
+}
+
+const getInitialTheme = createServerFn({ method: 'GET' }).handler(() => {
+  const theme = getServerCookie('vite-ui-theme')
+  return isTheme(theme) ? theme : 'system'
+})
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  loader: () => getInitialTheme(),
   head: () => ({
     meta: [
       {
@@ -50,7 +63,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
-  shellComponent: RootDocument,
   component: RootComponent,
   notFoundComponent: () => {
     return (
@@ -71,58 +83,69 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootComponent() {
-  const defaultOpen = getCookie('sidebar_state') !== 'false'
+  const initialTheme = Route.useLoaderData()
+  const defaultOpen = getClientCookie('sidebar_state') !== 'false'
 
   return (
-    <SearchProvider>
-      <LayoutProvider>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <SkipToMain />
-          <AppSidebar />
-          <SidebarInset
-            className={cn(
-              '@container/content',
-              'has-data-[layout=fixed]:h-svh',
-              'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]',
-            )}
-          >
-            <Outlet />
-          </SidebarInset>
-        </SidebarProvider>
-      </LayoutProvider>
-    </SearchProvider>
+    <RootDocument initialTheme={initialTheme}>
+      <ThemeProvider defaultTheme={initialTheme}>
+        <FontProvider>
+          <DirectionProvider>
+            <SearchProvider>
+              <LayoutProvider>
+                <SidebarProvider defaultOpen={defaultOpen}>
+                  <SkipToMain />
+                  <AppSidebar />
+                  <SidebarInset
+                    className={cn(
+                      '@container/content',
+                      'has-data-[layout=fixed]:h-svh',
+                      'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]',
+                    )}
+                  >
+                    <Outlet />
+                  </SidebarInset>
+                </SidebarProvider>
+              </LayoutProvider>
+            </SearchProvider>
+            <Toaster />
+          </DirectionProvider>
+        </FontProvider>
+      </ThemeProvider>
+    </RootDocument>
   )
 }
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({
+  children,
+  initialTheme,
+}: {
+  children: React.ReactNode
+  initialTheme: Theme
+}) {
+  const themeClassName = initialTheme === 'system' ? undefined : initialTheme
+
   return (
-    <ThemeProvider>
-      <FontProvider>
-        <DirectionProvider>
-          <html lang="en">
-            <head>
-              <HeadContent />
-            </head>
-            <body>
-              {children}
-              <Toaster />
-              <TanStackDevtools
-                config={{
-                  position: 'bottom-right',
-                }}
-                plugins={[
-                  {
-                    name: 'Tanstack Router',
-                    render: <TanStackRouterDevtoolsPanel />,
-                  },
-                  TanStackQueryDevtools,
-                ]}
-              />
-              <Scripts />
-            </body>
-          </html>
-        </DirectionProvider>
-      </FontProvider>
-    </ThemeProvider>
+    <html lang="en" className={themeClassName} suppressHydrationWarning>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
+        <Scripts />
+      </body>
+    </html>
   )
 }

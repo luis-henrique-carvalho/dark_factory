@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useMemo } from 'react'
 import { getCookie, setCookie, removeCookie } from '#/lib/cookies'
 
-type Theme = 'dark' | 'light' | 'system'
+export type Theme = 'dark' | 'light' | 'system'
 type ResolvedTheme = Exclude<Theme, 'system'>
 
 const DEFAULT_THEME = 'system'
@@ -22,15 +22,11 @@ type ThemeProviderState = {
   resetTheme: () => void
 }
 
-const initialState: ThemeProviderState = {
-  defaultTheme: DEFAULT_THEME,
-  resolvedTheme: 'light',
-  theme: DEFAULT_THEME,
-  setTheme: () => null,
-  resetTheme: () => null,
-}
+const ThemeContext = createContext<ThemeProviderState | undefined>(undefined)
 
-const ThemeContext = createContext<ThemeProviderState>(initialState)
+function isTheme(value: string | undefined): value is Theme {
+  return value === 'dark' || value === 'light' || value === 'system'
+}
 
 export function ThemeProvider({
   children,
@@ -38,9 +34,10 @@ export function ThemeProvider({
   storageKey = THEME_COOKIE_NAME,
   ...props
 }: ThemeProviderProps) {
-  const [theme, _setTheme] = useState<Theme>(
-    () => (getCookie(storageKey) as Theme) || defaultTheme,
-  )
+  const [theme, _setTheme] = useState<Theme>(() => {
+    const storedTheme = getCookie(storageKey)
+    return isTheme(storedTheme) ? storedTheme : defaultTheme
+  })
 
   const resolvedTheme = useMemo((): ResolvedTheme => {
     if (typeof window === 'undefined') return 'dark'
@@ -53,7 +50,6 @@ export function ThemeProvider({
   }, [theme])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
     const root = window.document.documentElement
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
@@ -76,9 +72,9 @@ export function ThemeProvider({
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [theme, resolvedTheme])
 
-  const setTheme = (theme: Theme) => {
-    setCookie(storageKey, theme, THEME_COOKIE_MAX_AGE)
-    _setTheme(theme)
+  const setTheme = (newTheme: Theme) => {
+    setCookie(storageKey, newTheme, THEME_COOKIE_MAX_AGE)
+    _setTheme(newTheme)
   }
 
   const resetTheme = () => {

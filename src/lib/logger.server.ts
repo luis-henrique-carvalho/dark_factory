@@ -23,7 +23,9 @@ function normalizeValue(value: unknown): unknown {
     return Object.fromEntries(
       Object.entries(value).map(([key, nestedValue]) => [
         key,
-        sensitiveKeyPattern.test(key) ? '[REDACTED]' : normalizeValue(nestedValue),
+        sensitiveKeyPattern.test(key)
+          ? '[REDACTED]'
+          : normalizeValue(nestedValue),
       ]),
     )
   }

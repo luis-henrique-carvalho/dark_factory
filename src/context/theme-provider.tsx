@@ -39,7 +39,7 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, _setTheme] = useState<Theme>(
-    () => (getCookie(storageKey) as Theme) || defaultTheme
+    () => (getCookie(storageKey) as Theme) || defaultTheme,
   )
 
   const resolvedTheme = useMemo((): ResolvedTheme => {
@@ -49,7 +49,7 @@ export function ThemeProvider({
         ? 'dark'
         : 'light'
     }
-    return theme as ResolvedTheme
+    return theme
   }, [theme])
 
   useEffect(() => {

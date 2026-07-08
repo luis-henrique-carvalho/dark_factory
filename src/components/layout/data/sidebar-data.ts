@@ -6,15 +6,16 @@ import {
   Bell,
   Wrench,
   Command,
-  GalleryVerticalEnd
+  GalleryVerticalEnd,
 } from 'lucide-react'
-import { type SidebarData } from '../types'
+import type {SidebarData} from '../types';
 
 export const sidebarData: SidebarData = {
   user: {
     name: 'Admin',
     email: 'admin@darkfactory.ai',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
+    avatar:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
   },
   teams: [
     {

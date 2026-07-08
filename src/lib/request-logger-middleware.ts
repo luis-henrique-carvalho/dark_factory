@@ -12,10 +12,21 @@ function messageForStatus(status: number) {
   return 'request completed'
 }
 
+function domainForPath(path: string) {
+  const [, firstSegment, secondSegment, thirdSegment] = path.split('/')
+
+  if (firstSegment === 'api' && secondSegment === 'v1' && thirdSegment) {
+    return thirdSegment.toUpperCase()
+  }
+
+  return (firstSegment || 'APP').toUpperCase()
+}
+
 export const requestLoggerMiddleware = createMiddleware().server(
   async ({ next, request }) => {
     const startTime = Date.now()
     const url = new URL(request.url)
+    const scope = domainForPath(url.pathname)
 
     try {
       const result = await next()
@@ -24,10 +35,11 @@ export const requestLoggerMiddleware = createMiddleware().server(
       logger[levelForStatus(result.response.status)](
         messageForStatus(result.response.status),
         {
-        method: request.method,
-        path: url.pathname,
-        status: result.response.status,
-        durationMs,
+          scope,
+          method: request.method,
+          path: url.pathname,
+          status: result.response.status,
+          durationMs,
         },
       )
 
@@ -37,6 +49,7 @@ export const requestLoggerMiddleware = createMiddleware().server(
 
       if (error instanceof Response) {
         logger[levelForStatus(error.status)](messageForStatus(error.status), {
+          scope,
           method: request.method,
           path: url.pathname,
           status: error.status,
@@ -47,6 +60,7 @@ export const requestLoggerMiddleware = createMiddleware().server(
       }
 
       logger.error('request failed', {
+        scope,
         method: request.method,
         path: url.pathname,
         durationMs,

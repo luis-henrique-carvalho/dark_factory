@@ -23,6 +23,7 @@ import { SkipToMain } from '#/components/skip-to-main'
 import { ThemeProvider } from '#/context/theme-provider'
 import { FontProvider } from '#/context/font-provider'
 import { DirectionProvider } from '#/context/direction-provider'
+import { Toaster } from '#/components/ui/sonner'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -104,6 +105,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             </head>
             <body>
               {children}
+              <Toaster />
               <TanStackDevtools
                 config={{
                   position: 'bottom-right',

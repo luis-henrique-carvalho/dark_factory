@@ -13,9 +13,6 @@ export function useUsersMutations() {
       toast.success('User created successfully')
       usersInvalidations.invalidateList(queryClient)
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to create user')
-    },
   })
 
   const updateMutation = useMutation({
@@ -25,9 +22,6 @@ export function useUsersMutations() {
       toast.success('User updated successfully')
       usersInvalidations.invalidateList(queryClient)
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to update user')
-    },
   })
 
   const deleteMutation = useMutation({
@@ -35,9 +29,6 @@ export function useUsersMutations() {
     onSuccess: () => {
       toast.success('User deleted successfully')
       usersInvalidations.invalidateList(queryClient)
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to delete user')
     },
   })
 

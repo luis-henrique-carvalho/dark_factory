@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import {
@@ -26,7 +26,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
-import type {NavCollapsible, NavItem, NavLink, NavGroup as NavGroupProps} from './types';
+import type {
+  NavCollapsible,
+  NavItem,
+  NavLink,
+  NavGroup as NavGroupProps,
+} from './types'
 
 export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar()

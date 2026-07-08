@@ -9,9 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsersRouteImport } from './routes/users'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiV1UsersIndexRouteImport } from './routes/api/v1/users/index'
+import { Route as ApiV1UsersMeRouteImport } from './routes/api/v1/users/me'
+import { Route as ApiV1UsersUserIdRouteImport } from './routes/api/v1/users/$userId'
 
+const UsersRoute = UsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -22,35 +31,92 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1UsersIndexRoute = ApiV1UsersIndexRouteImport.update({
+  id: '/api/v1/users/',
+  path: '/api/v1/users/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1UsersMeRoute = ApiV1UsersMeRouteImport.update({
+  id: '/api/v1/users/me',
+  path: '/api/v1/users/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1UsersUserIdRoute = ApiV1UsersUserIdRouteImport.update({
+  id: '/api/v1/users/$userId',
+  path: '/api/v1/users/$userId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/users': typeof UsersRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
+  '/api/v1/users/me': typeof ApiV1UsersMeRoute
+  '/api/v1/users/': typeof ApiV1UsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/users': typeof UsersRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
+  '/api/v1/users/me': typeof ApiV1UsersMeRoute
+  '/api/v1/users': typeof ApiV1UsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/users': typeof UsersRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
+  '/api/v1/users/me': typeof ApiV1UsersMeRoute
+  '/api/v1/users/': typeof ApiV1UsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/users'
+    | '/api/auth/$'
+    | '/api/v1/users/$userId'
+    | '/api/v1/users/me'
+    | '/api/v1/users/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/auth/$'
-  id: '__root__' | '/' | '/api/auth/$'
+  to:
+    | '/'
+    | '/users'
+    | '/api/auth/$'
+    | '/api/v1/users/$userId'
+    | '/api/v1/users/me'
+    | '/api/v1/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/users'
+    | '/api/auth/$'
+    | '/api/v1/users/$userId'
+    | '/api/v1/users/me'
+    | '/api/v1/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  UsersRoute: typeof UsersRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiV1UsersUserIdRoute: typeof ApiV1UsersUserIdRoute
+  ApiV1UsersMeRoute: typeof ApiV1UsersMeRoute
+  ApiV1UsersIndexRoute: typeof ApiV1UsersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +131,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/users/': {
+      id: '/api/v1/users/'
+      path: '/api/v1/users'
+      fullPath: '/api/v1/users/'
+      preLoaderRoute: typeof ApiV1UsersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/users/me': {
+      id: '/api/v1/users/me'
+      path: '/api/v1/users/me'
+      fullPath: '/api/v1/users/me'
+      preLoaderRoute: typeof ApiV1UsersMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/users/$userId': {
+      id: '/api/v1/users/$userId'
+      path: '/api/v1/users/$userId'
+      fullPath: '/api/v1/users/$userId'
+      preLoaderRoute: typeof ApiV1UsersUserIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  UsersRoute: UsersRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiV1UsersUserIdRoute: ApiV1UsersUserIdRoute,
+  ApiV1UsersMeRoute: ApiV1UsersMeRoute,
+  ApiV1UsersIndexRoute: ApiV1UsersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

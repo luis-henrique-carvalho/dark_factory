@@ -7,8 +7,9 @@ import {
   Wrench,
   Command,
   GalleryVerticalEnd,
+  Users,
 } from 'lucide-react'
-import type {SidebarData} from '../types';
+import type { SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
@@ -37,6 +38,11 @@ export const sidebarData: SidebarData = {
           title: 'Dashboard',
           url: '/',
           icon: LayoutDashboard,
+        },
+        {
+          title: 'Users',
+          url: '/users',
+          icon: Users,
         },
       ],
     },

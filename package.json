@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
+    "@radix-ui/react-direction": "^1.1.2",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-query": "latest",

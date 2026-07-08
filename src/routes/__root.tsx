@@ -2,15 +2,26 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  Outlet,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-
-import appCss from '../styles.css?url'
+import appCss from '../styles/index.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+
+import { getCookie } from '#/lib/cookies'
+import { cn } from '#/lib/utils'
+import { LayoutProvider } from '#/context/layout-provider'
+import { SearchProvider } from '#/context/search-provider'
+import { SidebarInset, SidebarProvider } from '#/components/ui/sidebar'
+import { AppSidebar } from '#/components/layout/app-sidebar'
+import { SkipToMain } from '#/components/skip-to-main'
+import { ThemeProvider } from '#/context/theme-provider'
+import { FontProvider } from '#/context/font-provider'
+import { DirectionProvider } from '#/context/direction-provider'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -27,7 +38,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Dark Factory',
       },
     ],
     links: [
@@ -38,30 +49,61 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+  component: RootComponent,
 })
+
+function RootComponent() {
+  const defaultOpen = getCookie('sidebar_state') !== 'false'
+
+  return (
+    <SearchProvider>
+      <LayoutProvider>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <SkipToMain />
+          <AppSidebar />
+          <SidebarInset
+            className={cn(
+              '@container/content',
+              'has-data-[layout=fixed]:h-svh',
+              'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]',
+            )}
+          >
+            <Outlet />
+          </SidebarInset>
+        </SidebarProvider>
+      </LayoutProvider>
+    </SearchProvider>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
-        <Scripts />
-      </body>
-    </html>
+    <ThemeProvider>
+      <FontProvider>
+        <DirectionProvider>
+          <html lang="en">
+            <head>
+              <HeadContent />
+            </head>
+            <body>
+              {children}
+              <TanStackDevtools
+                config={{
+                  position: 'bottom-right',
+                }}
+                plugins={[
+                  {
+                    name: 'Tanstack Router',
+                    render: <TanStackRouterDevtoolsPanel />,
+                  },
+                  TanStackQueryDevtools,
+                ]}
+              />
+              <Scripts />
+            </body>
+          </html>
+        </DirectionProvider>
+      </FontProvider>
+    </ThemeProvider>
   )
 }

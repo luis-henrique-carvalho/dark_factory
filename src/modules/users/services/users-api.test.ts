@@ -12,7 +12,7 @@ vi.mock('axios', () => ({
 const axiosGet = vi.mocked(axios.get)
 
 describe('UsersApi', () => {
-  it('sends listing params as query params', async () => {
+  it('should send listing params as query params', async () => {
     const response = {
       items: [],
       meta: {
@@ -46,7 +46,7 @@ describe('UsersApi', () => {
     })
   })
 
-  it('accepts the paginated users response schema', () => {
+  it('should accept the paginated users response schema', () => {
     const parsed = listUsersResponseSchema.parse({
       items: [
         {

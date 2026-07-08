@@ -1,0 +1,15 @@
+services:
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: dark_factory_postgres_test
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dark_factory_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+
+volumes:
+  pgdata_test:

@@ -75,12 +75,12 @@ export class UsersRepository {
       .where(eq(user.id, id))
       .returning()
 
-    return updated
+    return updated || null
   }
 
   static async delete(id: string): Promise<UserRow | null> {
     const [deleted] = await db.delete(user).where(eq(user.id, id)).returning()
 
-    return deleted
+    return deleted || null
   }
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createUserDto, updateUserDto } from './users.dto'
 
 describe('users DTOs', () => {
-  it('validates create user payloads', () => {
+  it('should validate create user payloads', () => {
     expect(
       createUserDto.parse({
         name: 'Ana Maria',
@@ -14,7 +14,7 @@ describe('users DTOs', () => {
     })
   })
 
-  it('rejects empty update payloads', () => {
+  it('should reject empty update payloads', () => {
     expect(() => updateUserDto.parse({})).toThrow()
   })
 })

@@ -29,7 +29,7 @@ vi.mock('#/db', () => ({
 }))
 
 describe('UsersRepository', () => {
-  it('applies pagination and filters to list queries', async () => {
+  it('should apply pagination and filters to list queries', async () => {
     const row = {
       id: 'user-1',
       name: 'Ana',

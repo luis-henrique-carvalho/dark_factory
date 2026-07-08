@@ -1,22 +1,33 @@
+import { ZodError } from 'zod'
 import { UsersService } from './users.service'
 import { UsersPolicy } from './users.policy'
 import {
   createUserFormSchema,
   updateUserFormSchema,
-} from '../schemas/users.schema'
+} from '../schemas'
+import { listUsersRequestSchema } from '../contracts'
 import type { AuthContext } from '#/modules/auth/server/auth-middleware'
 
 export const UsersController = {
-  async handleList() {
+  async handleList({ request }: { request: Request }) {
     try {
       // Check Authorization
       if (!(await UsersPolicy.canList())) {
         return Response.json({ error: 'Forbidden' }, { status: 403 })
       }
 
-      const users = await UsersService.listAll()
-      return Response.json({ users, total: users.length })
+      const searchParams = Object.fromEntries(
+        new URL(request.url).searchParams,
+      )
+      const params = listUsersRequestSchema.parse(searchParams)
+      const response = await UsersService.list(params)
+
+      return Response.json(response)
     } catch (error: any) {
+      if (error instanceof ZodError) {
+        return Response.json({ error: 'Invalid query params' }, { status: 400 })
+      }
+
       return Response.json(
         { error: error.message },
         { status: error.statusCode || 500 },

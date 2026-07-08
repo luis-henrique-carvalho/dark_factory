@@ -1,9 +1,13 @@
 import { UsersRepository } from './users.repository'
 import { EmailAlreadyExistsError, UserNotFoundError } from './users.errors'
+import { createPaginatedResponse } from '#/lib/server/list-query'
+import type { ListUsersRequest } from '../contracts'
 
 export class UsersService {
-  static async listAll() {
-    return await UsersRepository.findAll()
+  static async list(params: ListUsersRequest) {
+    const { items, total } = await UsersRepository.findPage(params)
+
+    return createPaginatedResponse(items, { ...params, total })
   }
 
   static async getById(id: string) {
@@ -14,7 +18,9 @@ export class UsersService {
 
   static async create(data: { name: string; email: string }) {
     const existing = await UsersRepository.findByEmail(data.email)
+
     if (existing) throw new EmailAlreadyExistsError()
+
     return await UsersRepository.create({
       name: data.name,
       email: data.email,

@@ -5,8 +5,6 @@ import {
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -23,13 +21,13 @@ import {
   TableRow,
 } from '#/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '#/components/data-table'
-import { roles } from '../data/data'
 import type { User } from '../data/schema'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { usersColumns as columns } from './users-columns'
 
 type DataTableProps = {
   data: User[]
+  total: number
   search: Record<string, unknown>
   navigate: NavigateFn
   isLoading?: boolean
@@ -37,6 +35,7 @@ type DataTableProps = {
 
 export function UsersTable({
   data,
+  total,
   search,
   navigate,
   isLoading,
@@ -46,6 +45,8 @@ export function UsersTable({
   const [sorting, setSorting] = useState<SortingState>([])
 
   const {
+    globalFilter,
+    onGlobalFilterChange,
     columnFilters,
     onColumnFiltersChange,
     pagination,
@@ -54,12 +55,27 @@ export function UsersTable({
   } = useTableUrlState({
     search,
     navigate,
-    pagination: { defaultPage: 1, defaultPageSize: 10 },
-    globalFilter: { enabled: false },
+    pagination: {
+      pageKey: 'page',
+      pageSizeKey: 'limit',
+      defaultPage: 1,
+      defaultPageSize: 20,
+    },
+    globalFilter: { enabled: true, key: 'query' },
     columnFilters: [
-      { columnId: 'name', searchKey: 'username', type: 'string' },
-      { columnId: 'status', searchKey: 'status', type: 'array' },
-      { columnId: 'role', searchKey: 'role', type: 'array' },
+      {
+        columnId: 'emailVerified',
+        searchKey: 'emailVerified',
+        type: 'array',
+        serialize: (value) => {
+          const values = Array.isArray(value) ? value : []
+          return values.length === 1 ? values[0] : undefined
+        },
+        deserialize: (value) => {
+          if (typeof value !== 'boolean') return []
+          return [String(value)]
+        },
+      },
     ],
   })
 
@@ -72,16 +88,19 @@ export function UsersTable({
       rowSelection,
       columnFilters,
       columnVisibility,
+      globalFilter,
     },
+    manualFiltering: true,
+    manualPagination: true,
+    rowCount: total,
     enableRowSelection: true,
     onPaginationChange,
+    onGlobalFilterChange,
     onColumnFiltersChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
-    getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -100,27 +119,19 @@ export function UsersTable({
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter users..."
-        searchKey="name"
+        searchPlaceholder="Search users by name..."
         filters={[
           {
-            columnId: 'status',
-            title: 'Status',
+            columnId: 'emailVerified',
+            title: 'Email verified',
             options: [
-              { label: 'Active', value: 'active' },
-              { label: 'Inactive', value: 'inactive' },
-              { label: 'Invited', value: 'invited' },
-              { label: 'Suspended', value: 'suspended' },
+              { label: 'Verified', value: 'true' },
+              { label: 'Unverified', value: 'false' },
             ],
-          },
-          {
-            columnId: 'role',
-            title: 'Role',
-            options: roles.map((role) => ({ ...role })),
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border bg-card">
+      <div className="min-h-104 overflow-hidden rounded-md border bg-card">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -153,7 +164,7 @@ export function UsersTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
+                  className="h-90 text-center text-muted-foreground"
                 >
                   Loading users...
                 </TableCell>
@@ -186,7 +197,7 @@ export function UsersTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-90 text-center"
                 >
                   No results.
                 </TableCell>

@@ -10,14 +10,21 @@ import { UsersPrimaryButtons } from '../components/users-primary-buttons'
 import { UsersProvider } from '../components/users-provider'
 import { UsersTable } from '../components/users-table'
 import { useUsersList } from '../hooks/use-users'
+import { userUiSchema } from '../data/schema'
 
 const route = getRouteApi('/users')
 
 export function UsersView() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
-  const { data, isLoading } = useUsersList()
-  const users = data?.users || []
+  const params = {
+    page: search.page ?? 1,
+    limit: search.limit ?? 20,
+    query: search.query?.trim() || undefined,
+    emailVerified: search.emailVerified,
+  }
+  const { data, isLoading } = useUsersList(params)
+  const users = userUiSchema.array().parse(data?.items ?? [])
 
   return (
     <UsersProvider>
@@ -40,6 +47,7 @@ export function UsersView() {
         </div>
         <UsersTable
           data={users}
+          total={data?.meta.total ?? 0}
           search={search}
           navigate={navigate}
           isLoading={isLoading}

@@ -62,6 +62,25 @@ export const usersColumns: ColumnDef<User>[] = [
     ),
   },
   {
+    accessorKey: 'emailVerified',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Email" />
+    ),
+    cell: ({ row }) => {
+      const verified = row.getValue('emailVerified')
+
+      return (
+        <Badge variant="outline" className="capitalize">
+          {verified ? 'Verified' : 'Unverified'}
+        </Badge>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.getValue(id)))
+    },
+    enableSorting: false,
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />

@@ -1,14 +1,16 @@
 import axios from 'axios'
 import type {
   User,
-  ListUsersResponse,
   CreateUserForm,
   UpdateUserForm,
-} from '../schemas/users.schema'
+} from '../schemas'
+import type { ListUsersRequest, ListUsersResponse } from '../contracts'
 
 export const UsersApi = {
-  async list(): Promise<ListUsersResponse> {
-    const response = await axios.get<ListUsersResponse>('/api/v1/users')
+  async list(params: ListUsersRequest): Promise<ListUsersResponse> {
+    const response = await axios.get<ListUsersResponse>('/api/v1/users', {
+      params,
+    })
     return response.data
   },
 

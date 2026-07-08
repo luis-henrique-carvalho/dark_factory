@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { UsersApi } from '../services/users-api'
 import { usersInvalidations } from '../services/users-invalidations'
-import type { CreateUserForm, UpdateUserForm } from '../schemas/users.schema'
+import type { CreateUserForm, UpdateUserForm } from '../schemas'
 
 export function useUsersMutations() {
   const queryClient = useQueryClient()

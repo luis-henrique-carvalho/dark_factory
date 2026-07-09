@@ -40,7 +40,7 @@ describe('UsersRepository (Integration)', () => {
           name: 'User Two',
           email,
           emailVerified: false,
-        })
+        }),
       ).rejects.toThrow()
     })
 
@@ -50,7 +50,7 @@ describe('UsersRepository (Integration)', () => {
           name: null as unknown as string,
           email: `null-name-${crypto.randomUUID()}@example.com`,
           emailVerified: false,
-        })
+        }),
       ).rejects.toThrow()
     })
   })
@@ -171,16 +171,26 @@ describe('UsersRepository (Integration)', () => {
       expect(page1.total).toBe(3)
 
       // Query with query filter
-      const filterPage = await UsersRepository.findPage({ page: 1, limit: 10, query: 'smith' })
+      const filterPage = await UsersRepository.findPage({
+        page: 1,
+        limit: 10,
+        query: 'smith',
+      })
       expect(filterPage.items).toHaveLength(2)
       expect(filterPage.total).toBe(2)
-      expect(filterPage.items.every(u => u.name.toLowerCase().includes('smith'))).toBe(true)
+      expect(
+        filterPage.items.every((u) => u.name.toLowerCase().includes('smith')),
+      ).toBe(true)
 
       // Query with verified filter
-      const verifiedPage = await UsersRepository.findPage({ page: 1, limit: 10, emailVerified: true })
+      const verifiedPage = await UsersRepository.findPage({
+        page: 1,
+        limit: 10,
+        emailVerified: true,
+      })
       expect(verifiedPage.items).toHaveLength(2)
       expect(verifiedPage.total).toBe(2)
-      expect(verifiedPage.items.every(u => u.emailVerified)).toBe(true)
+      expect(verifiedPage.items.every((u) => u.emailVerified)).toBe(true)
     })
   })
 })

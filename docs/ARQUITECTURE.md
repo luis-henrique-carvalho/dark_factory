@@ -1231,10 +1231,7 @@ export function handleModuleControllerError(error: unknown) {
   }
 
   if (error instanceof ModuleError) {
-    return Response.json(
-      { error: error.message },
-      { status: error.statusCode },
-    )
+    return Response.json({ error: error.message }, { status: error.statusCode })
   }
 
   console.error(error)
@@ -2636,37 +2633,37 @@ Para garantir a confiabilidade da aplicação full-stack (SSR, Server Routes e C
 ### 30.1 Ambientes e Tipos de Testes
 
 1. **Front-end (Browser Mode):**
-   * **Tecnologias:** `@vitest/browser-playwright` + `vitest-browser-react`.
-   * **Configuração:** [vitest.config.browser.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/vitest.config.browser.ts).
-   * **Foco:** Validação de componentes React, manipulação do DOM real, interações complexas (mouse/foco) e cookies reais dentro de um navegador Chromium headless gerenciado pelo Playwright.
-   * **Arquivos:** `src/**/*.test.tsx`.
+   - **Tecnologias:** `@vitest/browser-playwright` + `vitest-browser-react`.
+   - **Configuração:** [vitest.config.browser.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/vitest.config.browser.ts).
+   - **Foco:** Validação de componentes React, manipulação do DOM real, interações complexas (mouse/foco) e cookies reais dentro de um navegador Chromium headless gerenciado pelo Playwright.
+   - **Arquivos:** `src/**/*.test.tsx`.
 
 2. **Back-end e Banco de Dados (Node Mode):**
-   * **Tecnologias:** Vitest (Node.js) + Drizzle ORM + PostgreSQL real (Docker).
-   * **Configuração:** [vitest.config.node.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/vitest.config.node.ts).
-   * **Foco:** Testes unitários de serviços/DTOs, testes de integração de repositórios ([user.repository.integration.test.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/src/modules/users/server/repositories/user.repository.integration.test.ts)) e testes de integração de endpoints REST ([users-api.integration.test.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/src/modules/users/server/controllers/users-api.integration.test.ts)).
-   * **Segurança e Concorrência:** Para evitar colisões de chaves primárias e concorrência na execução de migrações em paralelo, os testes de Node rodam em uma única thread sequencial (`fileParallelism: false`).
-   * **Arquivos:** `src/**/*.test.ts`.
+   - **Tecnologias:** Vitest (Node.js) + Drizzle ORM + PostgreSQL real (Docker).
+   - **Configuração:** [vitest.config.node.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/vitest.config.node.ts).
+   - **Foco:** Testes unitários de serviços/DTOs, testes de integração de repositórios ([user.repository.integration.test.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/src/modules/users/server/repositories/user.repository.integration.test.ts)) e testes de integração de endpoints REST ([users-api.integration.test.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/src/modules/users/server/controllers/users-api.integration.test.ts)).
+   - **Segurança e Concorrência:** Para evitar colisões de chaves primárias e concorrência na execução de migrações em paralelo, os testes de Node rodam em uma única thread sequencial (`fileParallelism: false`).
+   - **Arquivos:** `src/**/*.test.ts`.
 
 ### 30.2 Banco de Dados para Testes de Integração
 
 Para garantir testes realistas, as requisições de backend utilizam uma base PostgreSQL dedicada:
-* **Infraestrutura:** Subida via Docker Compose ([docker-compose.test.yml](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/docker-compose.test.yml)) mapeando a porta `5433` (evitando conflitos com instâncias locais da porta `5432`).
-* **Migrações:** Executadas programaticamente no hook `beforeAll` da suíte através do helper [db-test-helper.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/src/test-utils/db-test-helper.ts#L10-L20) (`setupTestDb`).
-* **Isolamento de Estado:** Limpeza total via `TRUNCATE ... CASCADE` executada no hook `beforeEach` (`cleanDatabase`).
+
+- **Infraestrutura:** Subida via Docker Compose ([docker-compose.test.yml](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/docker-compose.test.yml)) mapeando a porta `5433` (evitando conflitos com instâncias locais da porta `5432`).
+- **Migrações:** Executadas programaticamente no hook `beforeAll` da suíte através do helper [db-test-helper.ts](file:///home/luis/Documentos/Git/DarkVideos/dark_factory/src/test-utils/db-test-helper.ts#L10-L20) (`setupTestDb`).
+- **Isolamento de Estado:** Limpeza total via `TRUNCATE ... CASCADE` executada no hook `beforeEach` (`cleanDatabase`).
 
 ### 30.3 Convenções e Boas Práticas de Escrita
 
-* **Nomenclatura Descritiva ("should"):** Todas as descrições em blocos `it` devem começar obrigatoriamente com **should** explicando o comportamento esperado do teste de forma clara (ex: `it('should return 404 when the user is not found by ID')`).
-* **Estrutura Modular:** Agrupar casos de teste em blocos `describe` aninhados correspondentes a cada método ou handler testado.
-* **Dados Dinâmicos:** Usar dados dinâmicos (como geradores de e-mails com `crypto.randomUUID()`) para evitar e-mails duplicados e conflitos de banco de dados entre asserções.
-* **Isolamento do Roteamento:** Testes de controladores/API devem ficar dentro do diretório do respectivo módulo (`src/modules/<module>/server/controllers`) e **nunca** no diretório de rotas do TanStack Start (`src/routes`), para evitar que o gerador de rotas tente compilá-los erroneamente como rotas da página.
+- **Nomenclatura Descritiva ("should"):** Todas as descrições em blocos `it` devem começar obrigatoriamente com **should** explicando o comportamento esperado do teste de forma clara (ex: `it('should return 404 when the user is not found by ID')`).
+- **Estrutura Modular:** Agrupar casos de teste em blocos `describe` aninhados correspondentes a cada método ou handler testado.
+- **Dados Dinâmicos:** Usar dados dinâmicos (como geradores de e-mails com `crypto.randomUUID()`) para evitar e-mails duplicados e conflitos de banco de dados entre asserções.
+- **Isolamento do Roteamento:** Testes de controladores/API devem ficar dentro do diretório do respectivo módulo (`src/modules/<module>/server/controllers`) e **nunca** no diretório de rotas do TanStack Start (`src/routes`), para evitar que o gerador de rotas tente compilá-los erroneamente como rotas da página.
 
 ### 30.4 Scripts de Execução (package.json)
 
-* `npm run db:test:up` - Inicia o contêiner Docker do PostgreSQL de teste.
-* `npm run test` - Executa a suíte completa de testes sequencialmente (Node seguido de Browser).
-* `npm run test:integration` - Carrega as variáveis de `.env.test` e executa os testes de integração do Node/DB.
-* `npm run test:browser` - Executa os testes de frontend rodando no navegador Chromium headless.
-* `npm run db:test:down` - Encerra o contêiner Docker do banco de testes.
-
+- `npm run db:test:up` - Inicia o contêiner Docker do PostgreSQL de teste.
+- `npm run test` - Executa a suíte completa de testes sequencialmente (Node seguido de Browser).
+- `npm run test:integration` - Carrega as variáveis de `.env.test` e executa os testes de integração do Node/DB.
+- `npm run test:browser` - Executa os testes de frontend rodando no navegador Chromium headless.
+- `npm run db:test:down` - Encerra o contêiner Docker do banco de testes.

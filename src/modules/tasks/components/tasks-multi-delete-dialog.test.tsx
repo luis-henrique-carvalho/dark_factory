@@ -17,7 +17,7 @@ describe('TasksMultiDeleteDialog', () => {
     const { table } = createTableMock()
 
     const { getByRole, getByText } = await render(
-      <TasksMultiDeleteDialog open onOpenChange={vi.fn()} table={table} />
+      <TasksMultiDeleteDialog open onOpenChange={vi.fn()} table={table} />,
     )
 
     const title = getByRole('heading', {
@@ -25,7 +25,7 @@ describe('TasksMultiDeleteDialog', () => {
       name: /Delete 2 tasks/i,
     })
     const desc = getByText(
-      'Are you sure you want to delete the selected tasks?'
+      'Are you sure you want to delete the selected tasks?',
     )
     const confirmDeleteInput = getByRole('textbox', {
       name: /Confirm by typing "DELETE"/i,
@@ -44,7 +44,7 @@ describe('TasksMultiDeleteDialog', () => {
   it('keeps the delete button disabled until the confirm delete input is filled correctly', async () => {
     const { table } = createTableMock()
     const { getByRole } = await render(
-      <TasksMultiDeleteDialog open onOpenChange={vi.fn()} table={table} />
+      <TasksMultiDeleteDialog open onOpenChange={vi.fn()} table={table} />,
     )
 
     const confirmDeleteInput = getByRole('textbox', {
@@ -65,7 +65,7 @@ describe('TasksMultiDeleteDialog', () => {
     const onOpenChange = vi.fn()
     const { table } = createTableMock()
     const { getByRole } = await render(
-      <TasksMultiDeleteDialog open onOpenChange={onOpenChange} table={table} />
+      <TasksMultiDeleteDialog open onOpenChange={onOpenChange} table={table} />,
     )
 
     const cancelButton = getByRole('button', { name: /Cancel/i })
@@ -82,7 +82,7 @@ describe('TasksMultiDeleteDialog', () => {
       const [open, setOpen] = useState(true)
       return (
         <>
-          <button type='button' onClick={() => setOpen(true)}>
+          <button type="button" onClick={() => setOpen(true)}>
             Reopen
           </button>
           {open ? (
@@ -116,7 +116,7 @@ describe('TasksMultiDeleteDialog', () => {
     const { table, resetRowSelection } = createTableMock()
     const onOpenChange = vi.fn()
     const { getByRole } = await render(
-      <TasksMultiDeleteDialog open onOpenChange={onOpenChange} table={table} />
+      <TasksMultiDeleteDialog open onOpenChange={onOpenChange} table={table} />,
     )
 
     const confirmDeleteInput = getByRole('textbox', {
@@ -141,7 +141,7 @@ describe('TasksMultiDeleteDialog', () => {
     const { table, resetRowSelection } = createTableMock()
     const onOpenChange = vi.fn()
     const { getByRole } = await render(
-      <TasksMultiDeleteDialog open onOpenChange={onOpenChange} table={table} />
+      <TasksMultiDeleteDialog open onOpenChange={onOpenChange} table={table} />,
     )
 
     const confirmDeleteInput = getByRole('textbox', {

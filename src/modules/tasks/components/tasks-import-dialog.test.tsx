@@ -13,7 +13,7 @@ describe('TasksImportDialog', () => {
   it('renders the dialog with the correct title, description, file input and buttons', async () => {
     const onOpenChange = vi.fn()
     const { getByRole, getByText, getByLabelText } = await render(
-      <TasksImportDialog open onOpenChange={onOpenChange} />
+      <TasksImportDialog open onOpenChange={onOpenChange} />,
     )
 
     const title = getByRole('heading', {
@@ -38,7 +38,7 @@ describe('TasksImportDialog', () => {
   it('shows validation when submitting without a file', async () => {
     const onOpenChange = vi.fn()
     const { getByRole, getByText } = await render(
-      <TasksImportDialog open onOpenChange={onOpenChange} />
+      <TasksImportDialog open onOpenChange={onOpenChange} />,
     )
 
     const importButton = getByRole('button', { name: /^Import$/i })
@@ -52,7 +52,7 @@ describe('TasksImportDialog', () => {
   it('calls showSubmittedData and closes when a CSV file is imported', async () => {
     const onOpenChange = vi.fn()
     const { getByRole, getByLabelText } = await render(
-      <TasksImportDialog open onOpenChange={onOpenChange} />
+      <TasksImportDialog open onOpenChange={onOpenChange} />,
     )
 
     const csv = new File(['a,b'], 'tasks.csv', { type: 'text/csv' })
@@ -68,7 +68,7 @@ describe('TasksImportDialog', () => {
         size: csv.size,
         type: 'text/csv',
       },
-      'You have imported the following file:'
+      'You have imported the following file:',
     )
     expect(onOpenChange).toHaveBeenCalledOnce()
     expect(onOpenChange).toHaveBeenCalledWith(false)
@@ -81,7 +81,7 @@ describe('TasksImportDialog', () => {
       const [open, setOpen] = useState(true)
       return (
         <>
-          <button type='button' onClick={() => setOpen(true)}>
+          <button type="button" onClick={() => setOpen(true)}>
             Reopen
           </button>
           <TasksImportDialog

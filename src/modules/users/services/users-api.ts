@@ -1,9 +1,5 @@
 import axios from 'axios'
-import type {
-  User,
-  CreateUserForm,
-  UpdateUserForm,
-} from '../schemas'
+import type { User, CreateUserForm, UpdateUserForm } from '../schemas'
 import type { ListUsersRequest, ListUsersResponse } from '../contracts'
 
 export const UsersApi = {

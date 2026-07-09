@@ -91,7 +91,9 @@ describe('Users API Route (Integration)', () => {
         emailVerified: false,
       })
 
-      const request = new Request('http://localhost/api/v1/users?page=1&limit=10')
+      const request = new Request(
+        'http://localhost/api/v1/users?page=1&limit=10',
+      )
       const response = await UsersController.handleList({ request })
       expect(response.status).toBe(200)
 
@@ -138,13 +140,16 @@ describe('Users API Route (Integration)', () => {
         emailVerified: false,
       })
 
-      const request = new Request(`http://localhost/api/v1/users/${created.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Updated User Name',
-        }),
-      })
+      const request = new Request(
+        `http://localhost/api/v1/users/${created.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Updated User Name',
+          }),
+        },
+      )
 
       const response = await UsersController.handleUpdate({
         request,
@@ -158,13 +163,16 @@ describe('Users API Route (Integration)', () => {
     })
 
     it('should return 404 when attempting to update a non-existent user', async () => {
-      const request = new Request('http://localhost/api/v1/users/non-existent-id', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'New Name',
-        }),
-      })
+      const request = new Request(
+        'http://localhost/api/v1/users/non-existent-id',
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'New Name',
+          }),
+        },
+      )
 
       const response = await UsersController.handleUpdate({
         request,
@@ -190,13 +198,16 @@ describe('Users API Route (Integration)', () => {
         emailVerified: false,
       })
 
-      const request = new Request(`http://localhost/api/v1/users/${userTwo.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: emailInUse,
-        }),
-      })
+      const request = new Request(
+        `http://localhost/api/v1/users/${userTwo.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: emailInUse,
+          }),
+        },
+      )
 
       const response = await UsersController.handleUpdate({
         request,

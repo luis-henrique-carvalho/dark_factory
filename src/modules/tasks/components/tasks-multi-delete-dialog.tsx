@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { type Table } from '@tanstack/react-table'
+import type {Table} from '@tanstack/react-table';
 import { AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { sleep } from '@/lib/utils'
@@ -52,12 +52,12 @@ export function TasksMultiDeleteDialog<TData>({
     <ConfirmDialog
       open={open}
       onOpenChange={onOpenChange}
-      form='tasks-multi-delete-form'
+      form="tasks-multi-delete-form"
       disabled={value.trim() !== CONFIRM_WORD}
       title={
-        <span className='text-destructive'>
+        <span className="text-destructive">
           <AlertTriangle
-            className='me-1 inline-block stroke-destructive'
+            className="me-1 inline-block stroke-destructive"
             size={18}
           />{' '}
           Delete {selectedRows.length}{' '}
@@ -66,20 +66,20 @@ export function TasksMultiDeleteDialog<TData>({
       }
       desc={
         <form
-          id='tasks-multi-delete-form'
+          id="tasks-multi-delete-form"
           onSubmit={(e) => {
             e.preventDefault()
             handleDelete()
           }}
-          className='space-y-4'
+          className="space-y-4"
         >
-          <p className='mb-2'>
+          <p className="mb-2">
             Are you sure you want to delete the selected tasks? <br />
             This action cannot be undone.
           </p>
 
-          <Label className='my-4 flex flex-col items-start gap-1.5'>
-            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
+          <Label className="my-4 flex flex-col items-start gap-1.5">
+            <span className="">Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -88,7 +88,7 @@ export function TasksMultiDeleteDialog<TData>({
             />
           </Label>
 
-          <Alert variant='destructive'>
+          <Alert variant="destructive">
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -96,7 +96,7 @@ export function TasksMultiDeleteDialog<TData>({
           </Alert>
         </form>
       }
-      confirmText='Delete'
+      confirmText="Delete"
       destructive
     />
   )

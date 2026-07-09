@@ -37,7 +37,9 @@ function normalizeValue(value: unknown): unknown {
 
 function normalizeContext(context: LogContext): LogContext {
   const normalized = normalizeValue(context)
-  return normalized && typeof normalized === 'object' && !Array.isArray(normalized)
+  return normalized &&
+    typeof normalized === 'object' &&
+    !Array.isArray(normalized)
     ? (normalized as LogContext)
     : {}
 }

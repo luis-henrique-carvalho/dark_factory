@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'
 import { showSubmittedData } from '@/lib/show-submitted-data'
-import { type Task } from '../data/schema'
+import type {Task} from '../data/schema';
 import { TasksMutateDrawer } from './tasks-mutate-drawer'
 
 vi.mock('@/lib/show-submitted-data', () => ({ showSubmittedData: vi.fn() }))
@@ -21,7 +21,7 @@ describe('TasksMutateDrawer', () => {
 
   it('renders create title and description', async () => {
     const { getByRole, getByText } = await render(
-      <TasksMutateDrawer open onOpenChange={vi.fn()} />
+      <TasksMutateDrawer open onOpenChange={vi.fn()} />,
     )
 
     const title = getByRole('heading', {
@@ -36,7 +36,7 @@ describe('TasksMutateDrawer', () => {
 
   it('renders edit title, description, and prefilled title', async () => {
     const { getByRole, getByText } = await render(
-      <TasksMutateDrawer open onOpenChange={vi.fn()} currentRow={MOCK_TASK} />
+      <TasksMutateDrawer open onOpenChange={vi.fn()} currentRow={MOCK_TASK} />,
     )
 
     const title = getByRole('heading', {
@@ -62,7 +62,7 @@ describe('TasksMutateDrawer', () => {
 
   it('shows validation messages when submitting an empty form', async () => {
     const { getByRole, getByText } = await render(
-      <TasksMutateDrawer open onOpenChange={vi.fn()} />
+      <TasksMutateDrawer open onOpenChange={vi.fn()} />,
     )
 
     const saveButton = getByRole('button', { name: /Save changes/i })
@@ -83,7 +83,7 @@ describe('TasksMutateDrawer', () => {
   it('submits create form and shows submitted data', async () => {
     const onOpenChange = vi.fn()
     const { getByRole } = await render(
-      <TasksMutateDrawer open onOpenChange={onOpenChange} />
+      <TasksMutateDrawer open onOpenChange={onOpenChange} />,
     )
 
     const titleInput = getByRole('textbox', { name: /Title/i })
@@ -114,7 +114,7 @@ describe('TasksMutateDrawer', () => {
   it('closes when Close is clicked', async () => {
     const onOpenChange = vi.fn()
     const { getByRole } = await render(
-      <TasksMutateDrawer open onOpenChange={onOpenChange} />
+      <TasksMutateDrawer open onOpenChange={onOpenChange} />,
     )
 
     const closeButtons = getByRole('dialog')
@@ -134,7 +134,7 @@ describe('TasksMutateDrawer', () => {
       const [open, setOpen] = useState(true)
       return (
         <>
-          <button type='button' onClick={() => setOpen(true)}>
+          <button type="button" onClick={() => setOpen(true)}>
             Reopen
           </button>
           <TasksMutateDrawer open={open} onOpenChange={setOpen} />

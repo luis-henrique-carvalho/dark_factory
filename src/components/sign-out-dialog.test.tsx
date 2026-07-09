@@ -43,7 +43,7 @@ describe('SignOutDialog', () => {
 
   it('signs out, clears cached session, and navigates to sign-in with current location as redirect', async () => {
     const { getByRole } = await render(
-      <SignOutDialog open onOpenChange={vi.fn()} />
+      <SignOutDialog open onOpenChange={vi.fn()} />,
     )
 
     await userEvent.click(getByRole('button', { name: /^Sign out$/i }))
@@ -63,7 +63,7 @@ describe('SignOutDialog', () => {
 
   it('does not sign out, clear session, or navigate when Cancel is clicked', async () => {
     const { getByRole } = await render(
-      <SignOutDialog open onOpenChange={vi.fn()} />
+      <SignOutDialog open onOpenChange={vi.fn()} />,
     )
 
     await userEvent.click(getByRole('button', { name: /^Cancel$/i }))

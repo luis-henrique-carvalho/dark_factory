@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm'
 import { db } from '#/db'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -24,6 +24,6 @@ export async function setupTestDb() {
  */
 export async function cleanDatabase() {
   await db.execute(
-    sql`TRUNCATE TABLE "session", "account", "verification", "user" CASCADE;`
+    sql`TRUNCATE TABLE "session", "account", "verification", "user" CASCADE;`,
   )
 }

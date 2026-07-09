@@ -71,15 +71,15 @@ export function AccountForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name='name'
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder='Your name' {...field} />
+                <Input placeholder="Your name" {...field} />
               </FormControl>
               <FormDescription>
                 This is the name that will be displayed on your profile and in
@@ -91,9 +91,9 @@ export function AccountForm() {
         />
         <FormField
           control={form.control}
-          name='dob'
+          name="dob"
           render={({ field }) => (
-            <FormItem className='flex flex-col'>
+            <FormItem className="flex flex-col">
               <FormLabel>Date of birth</FormLabel>
               <DatePicker selected={field.value} onSelect={field.onChange} />
               <FormDescription>
@@ -105,33 +105,33 @@ export function AccountForm() {
         />
         <FormField
           control={form.control}
-          name='language'
+          name="language"
           render={({ field }) => (
-            <FormItem className='flex flex-col'>
+            <FormItem className="flex flex-col">
               <FormLabel>Language</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant='outline'
-                      role='combobox'
+                      variant="outline"
+                      role="combobox"
                       className={cn(
                         'w-50 justify-between',
-                        !field.value && 'text-muted-foreground'
+                        !field.value && 'text-muted-foreground',
                       )}
                     >
                       {field.value
                         ? languages.find(
-                            (language) => language.value === field.value
+                            (language) => language.value === field.value,
                           )?.label
                         : 'Select language'}
-                      <CaretSortIcon className='ms-2 h-4 w-4 shrink-0 opacity-50' />
+                      <CaretSortIcon className="ms-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className='w-50 p-0'>
+                <PopoverContent className="w-50 p-0">
                   <Command>
-                    <CommandInput placeholder='Search language...' />
+                    <CommandInput placeholder="Search language..." />
                     <CommandEmpty>No language found.</CommandEmpty>
                     <CommandGroup>
                       <CommandList>
@@ -148,7 +148,7 @@ export function AccountForm() {
                                 'size-4',
                                 language.value === field.value
                                   ? 'opacity-100'
-                                  : 'opacity-0'
+                                  : 'opacity-0',
                               )}
                             />
                             {language.label}
@@ -166,7 +166,7 @@ export function AccountForm() {
             </FormItem>
           )}
         />
-        <Button type='submit'>Update account</Button>
+        <Button type="submit">Update account</Button>
       </form>
     </Form>
   )

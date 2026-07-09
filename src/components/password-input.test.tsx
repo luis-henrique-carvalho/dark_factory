@@ -14,7 +14,7 @@ import { PasswordInput } from './password-input'
 describe('PasswordInput', () => {
   it('renders the password input correctly', async () => {
     const { getByPlaceholder, getByRole } = await render(
-      <PasswordInput placeholder='password' />
+      <PasswordInput placeholder="password" />,
     )
 
     const passwordInput = getByPlaceholder('password')
@@ -27,7 +27,7 @@ describe('PasswordInput', () => {
 
   it('toggles the password visibility when the show password button is clicked', async () => {
     const { getByPlaceholder, getByRole } = await render(
-      <PasswordInput placeholder='password' />
+      <PasswordInput placeholder="password" />,
     )
 
     const passwordInput = getByPlaceholder('password')
@@ -52,7 +52,7 @@ describe('PasswordInput', () => {
 
   it('disables the show password button when the password input is disabled', async () => {
     const { getByPlaceholder, getByRole } = await render(
-      <PasswordInput placeholder='password' disabled />
+      <PasswordInput placeholder="password" disabled />,
     )
 
     const passwordInput = getByPlaceholder('password')
@@ -72,7 +72,7 @@ describe('PasswordInput', () => {
           <form>
             <FormField
               control={form.control}
-              name='password'
+              name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>

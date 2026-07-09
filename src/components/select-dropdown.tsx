@@ -42,9 +42,9 @@ export function SelectDropdown({
       </FormControl>
       <SelectContent>
         {isPending ? (
-          <SelectItem disabled value='loading' className='h-14'>
-            <div className='flex items-center justify-center gap-2'>
-              <Loader className='h-5 w-5 animate-spin' />
+          <SelectItem disabled value="loading" className="h-14">
+            <div className="flex items-center justify-center gap-2">
+              <Loader className="h-5 w-5 animate-spin" />
               {'  '}
               Loading...
             </div>

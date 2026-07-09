@@ -23,20 +23,27 @@ function paginationNumber({
   min: number
   max?: number
 }) {
-  return z.preprocess((value) => {
-    const parsed =
-      typeof value === 'number'
-        ? value
-        : typeof value === 'string' && value.trim() !== ''
-          ? Number(value)
-          : Number.NaN
+  return z.preprocess(
+    (value) => {
+      const parsed =
+        typeof value === 'number'
+          ? value
+          : typeof value === 'string' && value.trim() !== ''
+            ? Number(value)
+            : Number.NaN
 
-    if (!Number.isInteger(parsed)) return defaultValue
-    if (parsed < min) return defaultValue
-    if (max !== undefined && parsed > max) return max
+      if (!Number.isInteger(parsed)) return defaultValue
+      if (parsed < min) return defaultValue
+      if (max !== undefined && parsed > max) return max
 
-    return parsed
-  }, z.number().int().min(min).max(max ?? Number.MAX_SAFE_INTEGER))
+      return parsed
+    },
+    z
+      .number()
+      .int()
+      .min(min)
+      .max(max ?? Number.MAX_SAFE_INTEGER),
+  )
 }
 
 export function booleanQueryParam() {

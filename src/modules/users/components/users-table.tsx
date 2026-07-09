@@ -164,11 +164,20 @@ export function UsersTable({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className={cn(
-            isLoading && data.length > 0 && "opacity-50 pointer-events-none transition-opacity duration-200"
-          )}>
+          <TableBody
+            className={cn(
+              isLoading &&
+                data.length > 0 &&
+                'opacity-50 pointer-events-none transition-opacity duration-200',
+            )}
+          >
             {isLoading && data.length === 0 ? (
-              Array.from({ length: Math.min(table.getState().pagination.pageSize || 10, 10) }).map((_, rowIndex) => (
+              Array.from({
+                length: Math.min(
+                  table.getState().pagination.pageSize || 10,
+                  10,
+                ),
+              }).map((_, rowIndex) => (
                 <TableRow key={`skeleton-row-${rowIndex}`}>
                   {table.getVisibleFlatColumns().map((column) => (
                     <TableCell
@@ -234,10 +243,13 @@ export function UsersTable({
           </TableBody>
         </Table>
       </div>
-      <div className={cn(
-        "mt-auto flex flex-col gap-4",
-        isLoading && "opacity-50 pointer-events-none transition-opacity duration-200"
-      )}>
+      <div
+        className={cn(
+          'mt-auto flex flex-col gap-4',
+          isLoading &&
+            'opacity-50 pointer-events-none transition-opacity duration-200',
+        )}
+      >
         <DataTablePagination table={table} />
         <DataTableBulkActions table={table} />
       </div>

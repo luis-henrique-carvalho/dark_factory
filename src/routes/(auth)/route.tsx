@@ -1,9 +1,11 @@
-import { getSession } from '#/lib/auth/get-session'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { sessionQueryOptions } from '#/lib/auth/session-query'
 
 export const Route = createFileRoute('/(auth)')({
-  beforeLoad: async () => {
-    const session = await getSession()
+  beforeLoad: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(
+      sessionQueryOptions,
+    )
     if (session) {
       throw redirect({
         to: '/',

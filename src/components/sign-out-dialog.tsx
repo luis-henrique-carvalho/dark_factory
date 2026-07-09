@@ -1,5 +1,7 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
+import { sessionQueryKey } from '#/lib/auth/session-query'
 import { ConfirmDialog } from '#/components/confirm-dialog'
 
 interface SignOutDialogProps {
@@ -9,6 +11,8 @@ interface SignOutDialogProps {
 
 export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
   const navigate = useNavigate()
+  const location = useLocation()
+  const queryClient = useQueryClient()
 
   const handleSignOut = async () => {
     try {
@@ -16,9 +20,10 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
     } catch (e) {
       console.error('Failed to sign out:', e)
     }
-    // Navigate to root path
+    queryClient.removeQueries({ queryKey: sessionQueryKey })
     navigate({
-      to: '/',
+      to: '/sign-in',
+      search: { redirect: location.href },
       replace: true,
     })
   }

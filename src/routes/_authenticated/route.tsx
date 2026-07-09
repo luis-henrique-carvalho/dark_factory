@@ -6,11 +6,13 @@ import { SearchProvider } from '#/context/search-provider'
 import { SidebarInset, SidebarProvider } from '#/components/ui/sidebar'
 import { AppSidebar } from '#/components/layout/app-sidebar'
 import { SkipToMain } from '#/components/skip-to-main'
-import { getSession } from '#/lib/auth/get-session'
+import { sessionQueryOptions } from '#/lib/auth/session-query'
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: async ({ location }) => {
-    const session = await getSession()
+  beforeLoad: async ({ context, location }) => {
+    const session = await context.queryClient.ensureQueryData(
+      sessionQueryOptions,
+    )
     if (!session) {
       throw redirect({
         to: '/sign-in',

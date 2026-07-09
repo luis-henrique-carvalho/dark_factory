@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -7,6 +8,7 @@ import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 import { IconFacebook, IconGithub } from '#/assets/brand-icons'
 import { authClient } from '#/lib/auth/auth-client'
+import { sessionQueryKey } from '#/lib/auth/session-query'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import {
@@ -42,6 +44,7 @@ export function UserAuthForm({
 }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,10 +61,11 @@ export function UserAuthForm({
         email: data.email,
         password: data.password,
       })
-      .then((res) => {
+      .then(async (res) => {
         if (res.error) {
           throw new Error(res.error.message || 'Authentication failed.')
         }
+        await queryClient.invalidateQueries({ queryKey: sessionQueryKey })
         return res.data
       })
 

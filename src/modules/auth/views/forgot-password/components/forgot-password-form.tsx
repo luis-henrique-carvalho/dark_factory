@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { authClient } from '#/lib/auth-client'
+import { authClient } from '#/lib/auth/auth-client'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import {

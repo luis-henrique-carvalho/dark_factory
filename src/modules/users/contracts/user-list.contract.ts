@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { booleanQueryParam, listQuerySchema } from '#/lib/list-query'
+import { booleanQueryParam, listQuerySchema } from '#/lib/query/list-query'
 import { userSchema } from '../schemas/user.schema'
 
 export const listUsersRequestSchema = listQuerySchema.extend({

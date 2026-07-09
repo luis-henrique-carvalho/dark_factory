@@ -4,7 +4,7 @@ import {
   UserNotFoundError,
   mapUniqueEmailConstraint,
 } from '../errors/users.errors'
-import { createPaginatedResponse } from '#/lib/list-query'
+import { createPaginatedResponse } from '#/lib/query/list-query'
 import type { ListUsersRequest } from '../../contracts'
 import type { CreateUserDto, UpdateUserDto } from '../dtos/users.dto'
 

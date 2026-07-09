@@ -1,5 +1,5 @@
+import { handleServerError } from '#/lib/server/handle-server-error'
 import { QueryCache, QueryClient } from '@tanstack/react-query'
-import { handleServerError } from '#/lib/handle-server-error'
 
 export function getContext() {
   const queryClient = new QueryClient({

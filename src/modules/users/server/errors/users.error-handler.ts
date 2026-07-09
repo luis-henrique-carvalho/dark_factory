@@ -1,9 +1,9 @@
 import { UserError } from './users.errors'
-import { handleApiError } from '#/lib/handle-api-error.server'
+import { handleApiError } from '#/lib/server/handle-api-error.server'
 import type {
   ApiErrorContext,
   ApiErrorResult,
-} from '#/lib/handle-api-error.server'
+} from '#/lib/server/handle-api-error.server'
 
 function mapUsersError(error: unknown): ApiErrorResult | undefined {
   if (error instanceof UserError) {

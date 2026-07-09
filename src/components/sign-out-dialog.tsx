@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { authClient } from '#/lib/auth-client'
+import { authClient } from '#/lib/auth/auth-client'
 import { ConfirmDialog } from '#/components/confirm-dialog'
 
 interface SignOutDialogProps {

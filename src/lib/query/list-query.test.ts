@@ -56,17 +56,18 @@ describe('list query helpers', () => {
   })
 
   it('creates pagination metadata', () => {
-    expect(createPaginatedResponse(['a'], { page: 2, limit: 20, total: 45 }))
-      .toEqual({
-        items: ['a'],
-        meta: {
-          page: 2,
-          limit: 20,
-          total: 45,
-          totalPages: 3,
-          hasNextPage: true,
-          hasPreviousPage: true,
-        },
-      })
+    expect(
+      createPaginatedResponse(['a'], { page: 2, limit: 20, total: 45 }),
+    ).toEqual({
+      items: ['a'],
+      meta: {
+        page: 2,
+        limit: 20,
+        total: 45,
+        totalPages: 3,
+        hasNextPage: true,
+        hasPreviousPage: true,
+      },
+    })
   })
 })

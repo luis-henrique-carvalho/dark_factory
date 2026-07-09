@@ -1,5 +1,5 @@
 import { createMiddleware } from '@tanstack/react-start'
-import { auth } from '#/lib/auth'
+import { auth } from '#/lib/auth/auth'
 
 export type AuthContext = {
   session: NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>

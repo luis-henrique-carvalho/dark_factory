@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { getCookie, setCookie } from '#/lib/cookies'
+import { getCookie, setCookie } from '#/lib/browser/cookies'
 
 export type Collapsible = 'offcanvas' | 'icon' | 'none'
 type Variant = 'inset' | 'sidebar' | 'floating'

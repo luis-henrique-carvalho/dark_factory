@@ -1,4 +1,4 @@
-import { removeCookie } from '@/lib/cookies'
+import { removeCookie } from '#/lib/browser/cookies'
 
 /**
  * Remove cookies visible on `document.cookie` for test isolation.

@@ -63,15 +63,18 @@ export function handleApiError(
     logger.error(`${context.scope.toLowerCase()} controller error`, { error })
   }
 
-  logger[levelForStatus(status)](`${context.scope.toLowerCase()} request failed`, {
-    scope: context.scope,
-    method: request?.method,
-    path,
-    status,
-    requestBody: context.requestBody,
-    responseBody,
-    error: errorForLog(error, status),
-  })
+  logger[levelForStatus(status)](
+    `${context.scope.toLowerCase()} request failed`,
+    {
+      scope: context.scope,
+      method: request?.method,
+      path,
+      status,
+      requestBody: context.requestBody,
+      responseBody,
+      error: errorForLog(error, status),
+    },
+  )
 
   return Response.json(responseBody, { status })
 }

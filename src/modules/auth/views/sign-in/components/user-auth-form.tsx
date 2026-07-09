@@ -6,7 +6,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 import { IconFacebook, IconGithub } from '#/assets/brand-icons'
-import { authClient } from '#/lib/auth-client'
+import { authClient } from '#/lib/auth/auth-client'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import {

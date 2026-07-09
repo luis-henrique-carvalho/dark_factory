@@ -26,6 +26,7 @@ import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authen
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedBrandsIndexRouteImport } from './routes/_authenticated/brands/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
@@ -33,8 +34,11 @@ import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_a
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 import { Route as ApiV1UsersIndexRouteImport } from './routes/api/v1/users/index'
+import { Route as ApiV1BrandsIndexRouteImport } from './routes/api/v1/brands/index'
 import { Route as ApiV1UsersMeRouteImport } from './routes/api/v1/users/me'
 import { Route as ApiV1UsersUserIdRouteImport } from './routes/api/v1/users/$userId'
+import { Route as ApiV1BrandsBrandIdRouteImport } from './routes/api/v1/brands/$brandId'
+import { Route as ApiV1BrandsBrandIdArchiveRouteImport } from './routes/api/v1/brands/$brandId/archive'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -121,6 +125,12 @@ const AuthenticatedSettingsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedBrandsIndexRoute =
+  AuthenticatedBrandsIndexRouteImport.update({
+    id: '/brands/',
+    path: '/brands/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -161,6 +171,11 @@ const ApiV1UsersIndexRoute = ApiV1UsersIndexRouteImport.update({
   path: '/api/v1/users/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1BrandsIndexRoute = ApiV1BrandsIndexRouteImport.update({
+  id: '/api/v1/brands/',
+  path: '/api/v1/brands/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1UsersMeRoute = ApiV1UsersMeRouteImport.update({
   id: '/api/v1/users/me',
   path: '/api/v1/users/me',
@@ -171,6 +186,17 @@ const ApiV1UsersUserIdRoute = ApiV1UsersUserIdRouteImport.update({
   path: '/api/v1/users/$userId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1BrandsBrandIdRoute = ApiV1BrandsBrandIdRouteImport.update({
+  id: '/api/v1/brands/$brandId',
+  path: '/api/v1/brands/$brandId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1BrandsBrandIdArchiveRoute =
+  ApiV1BrandsBrandIdArchiveRouteImport.update({
+    id: '/archive',
+    path: '/archive',
+    getParentRoute: () => ApiV1BrandsBrandIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -191,12 +217,16 @@ export interface FileRoutesByFullPath {
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/brands/': typeof AuthenticatedBrandsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks/': typeof AuthenticatedTasksIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
+  '/api/v1/brands/$brandId': typeof ApiV1BrandsBrandIdRouteWithChildren
   '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
   '/api/v1/users/me': typeof ApiV1UsersMeRoute
+  '/api/v1/brands/': typeof ApiV1BrandsIndexRoute
   '/api/v1/users/': typeof ApiV1UsersIndexRoute
+  '/api/v1/brands/$brandId/archive': typeof ApiV1BrandsBrandIdArchiveRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof authForgotPasswordRoute
@@ -216,12 +246,16 @@ export interface FileRoutesByTo {
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/brands': typeof AuthenticatedBrandsIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/api/v1/brands/$brandId': typeof ApiV1BrandsBrandIdRouteWithChildren
   '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
   '/api/v1/users/me': typeof ApiV1UsersMeRoute
+  '/api/v1/brands': typeof ApiV1BrandsIndexRoute
   '/api/v1/users': typeof ApiV1UsersIndexRoute
+  '/api/v1/brands/$brandId/archive': typeof ApiV1BrandsBrandIdArchiveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -245,12 +279,16 @@ export interface FileRoutesById {
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_authenticated/brands/': typeof AuthenticatedBrandsIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/api/v1/brands/$brandId': typeof ApiV1BrandsBrandIdRouteWithChildren
   '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
   '/api/v1/users/me': typeof ApiV1UsersMeRoute
+  '/api/v1/brands/': typeof ApiV1BrandsIndexRoute
   '/api/v1/users/': typeof ApiV1UsersIndexRoute
+  '/api/v1/brands/$brandId/archive': typeof ApiV1BrandsBrandIdArchiveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -273,12 +311,16 @@ export interface FileRouteTypes {
     | '/settings/display'
     | '/settings/notifications'
     | '/api/auth/$'
+    | '/brands/'
     | '/settings/'
     | '/tasks/'
     | '/users/'
+    | '/api/v1/brands/$brandId'
     | '/api/v1/users/$userId'
     | '/api/v1/users/me'
+    | '/api/v1/brands/'
     | '/api/v1/users/'
+    | '/api/v1/brands/$brandId/archive'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -298,12 +340,16 @@ export interface FileRouteTypes {
     | '/settings/display'
     | '/settings/notifications'
     | '/api/auth/$'
+    | '/brands'
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/api/v1/brands/$brandId'
     | '/api/v1/users/$userId'
     | '/api/v1/users/me'
+    | '/api/v1/brands'
     | '/api/v1/users'
+    | '/api/v1/brands/$brandId/archive'
   id:
     | '__root__'
     | '/(auth)'
@@ -326,12 +372,16 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
     | '/api/auth/$'
+    | '/_authenticated/brands/'
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
+    | '/api/v1/brands/$brandId'
     | '/api/v1/users/$userId'
     | '/api/v1/users/me'
+    | '/api/v1/brands/'
     | '/api/v1/users/'
+    | '/api/v1/brands/$brandId/archive'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -344,8 +394,10 @@ export interface RootRouteChildren {
   errors503Route: typeof errors503Route
   ApiInngestRoute: typeof ApiInngestRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiV1BrandsBrandIdRoute: typeof ApiV1BrandsBrandIdRouteWithChildren
   ApiV1UsersUserIdRoute: typeof ApiV1UsersUserIdRoute
   ApiV1UsersMeRoute: typeof ApiV1UsersMeRoute
+  ApiV1BrandsIndexRoute: typeof ApiV1BrandsIndexRoute
   ApiV1UsersIndexRoute: typeof ApiV1UsersIndexRoute
 }
 
@@ -470,6 +522,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/brands/': {
+      id: '/_authenticated/brands/'
+      path: '/brands'
+      fullPath: '/brands/'
+      preLoaderRoute: typeof AuthenticatedBrandsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -519,6 +578,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1UsersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/brands/': {
+      id: '/api/v1/brands/'
+      path: '/api/v1/brands'
+      fullPath: '/api/v1/brands/'
+      preLoaderRoute: typeof ApiV1BrandsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/users/me': {
       id: '/api/v1/users/me'
       path: '/api/v1/users/me'
@@ -532,6 +598,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/v1/users/$userId'
       preLoaderRoute: typeof ApiV1UsersUserIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/brands/$brandId': {
+      id: '/api/v1/brands/$brandId'
+      path: '/api/v1/brands/$brandId'
+      fullPath: '/api/v1/brands/$brandId'
+      preLoaderRoute: typeof ApiV1BrandsBrandIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/brands/$brandId/archive': {
+      id: '/api/v1/brands/$brandId/archive'
+      path: '/archive'
+      fullPath: '/api/v1/brands/$brandId/archive'
+      preLoaderRoute: typeof ApiV1BrandsBrandIdArchiveRouteImport
+      parentRoute: typeof ApiV1BrandsBrandIdRoute
     }
   }
 }
@@ -581,6 +661,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
+  AuthenticatedBrandsIndexRoute: typeof AuthenticatedBrandsIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
@@ -589,12 +670,24 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
+  AuthenticatedBrandsIndexRoute: AuthenticatedBrandsIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface ApiV1BrandsBrandIdRouteChildren {
+  ApiV1BrandsBrandIdArchiveRoute: typeof ApiV1BrandsBrandIdArchiveRoute
+}
+
+const ApiV1BrandsBrandIdRouteChildren: ApiV1BrandsBrandIdRouteChildren = {
+  ApiV1BrandsBrandIdArchiveRoute: ApiV1BrandsBrandIdArchiveRoute,
+}
+
+const ApiV1BrandsBrandIdRouteWithChildren =
+  ApiV1BrandsBrandIdRoute._addFileChildren(ApiV1BrandsBrandIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   authRouteRoute: authRouteRouteWithChildren,
@@ -606,8 +699,10 @@ const rootRouteChildren: RootRouteChildren = {
   errors503Route: errors503Route,
   ApiInngestRoute: ApiInngestRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiV1BrandsBrandIdRoute: ApiV1BrandsBrandIdRouteWithChildren,
   ApiV1UsersUserIdRoute: ApiV1UsersUserIdRoute,
   ApiV1UsersMeRoute: ApiV1UsersMeRoute,
+  ApiV1BrandsIndexRoute: ApiV1BrandsIndexRoute,
   ApiV1UsersIndexRoute: ApiV1UsersIndexRoute,
 }
 export const routeTree = rootRouteImport

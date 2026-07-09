@@ -14,7 +14,7 @@ Currently, there is no centralized entity to represent a content brand (editoria
 
 ### New Capabilities
 
-*(none)*
+_(none)_
 
 ### Modified Capabilities
 

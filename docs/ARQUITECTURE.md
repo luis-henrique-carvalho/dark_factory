@@ -2675,15 +2675,20 @@ Para garantir testes realistas, as requisições de backend utilizam uma base Po
 Para apoiar a publicação automatizada e multiplataforma de conteúdos de forma segura e performática, as seguintes decisões estruturais foram definidas e devem ser respeitadas na codificação do banco de dados e APIs:
 
 ### 31.1 Desnormalização de `brand_id` para Otimização de Consultas
+
 A chave estrangeira `brand_id` está intencionalmente desnormalizada e presente em tabelas como `publication_plans` e `distribution_profiles`. Embora esses dados pudessem ser inferidos fazendo o JOIN com `content_projects`, a duplicação direta permite:
+
 - Executar queries de filtragem extremamente rápidas na Agenda Editorial (calendário de postagens) por Marca.
 - Simplificar e acelerar a busca direta de perfis e métricas sem encadeamento de múltiplos JOINs custosos.
 
 ### 31.2 Reaproveitamento Multiformato (1-para-Muitos em Vídeos Renderizados)
+
 A tabela `rendered_videos` possui relação de 1-para-Muitos com `content_projects`. Isso permite que um único projeto de conteúdo (com o mesmo roteiro e narração de base) possua múltiplos vídeos renderizados para formatos diferentes (ex: Shorts em 9:16 e vídeo longo em 16:9), promovendo o reaproveitamento nativo de assets.
 
 ### 31.3 Criptografia Simétrica de Tokens de Acesso OAuth
+
 Os tokens armazenados na tabela `platform_accounts` (`access_token_encrypted` e `refresh_token_encrypted`) devem ser criptografados utilizando algoritmos simétricos robustos (ex: `AES-256-GCM`). A chave de decodificação deve ser gerenciada em nível de sistema por meio da variável de ambiente `ENCRYPTION_KEY`, garantindo que credenciais comprometidas em vazamentos de banco de dados permaneçam seguras.
 
 ### 31.4 Mapeamento entre Conta Autenticada e Destinos Específicos
+
 A tabela `brand_platform_accounts` serve como ponte de muitos-para-muitos. Isso resolve o cenário onde um único login de rede social (ex: login de agência no Google OAuth registrado em `platform_accounts`) gerencia múltiplos canais do YouTube reais (IDs individuais guardados em `external_channel_id`). O sistema vincula a Marca do usuário a um destino específico de publicação, não apenas ao login genérico.

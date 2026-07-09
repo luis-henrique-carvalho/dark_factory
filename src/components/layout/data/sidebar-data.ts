@@ -9,6 +9,7 @@ import {
   GalleryVerticalEnd,
   Users,
   ListTodo,
+  BadgeCheck,
 } from 'lucide-react'
 import type { SidebarData } from '../types'
 
@@ -49,6 +50,11 @@ const navigationData = {
           title: 'Tasks',
           url: '/tasks',
           icon: ListTodo,
+        },
+        {
+          title: 'Brands',
+          url: '/brands',
+          icon: BadgeCheck,
         },
       ],
     },

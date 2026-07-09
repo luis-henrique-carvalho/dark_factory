@@ -8,6 +8,13 @@
       "when": 1783476452667,
       "tag": "0000_swift_jackal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783563380787,
+      "tag": "0001_sparkling_silver_sable",
+      "breakpoints": true
     }
   ]
 }

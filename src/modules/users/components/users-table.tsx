@@ -202,7 +202,7 @@ export function UsersTable({
                       ) : column.id === 'email' ? (
                         <Skeleton className="h-5 w-44 rounded ms-2" />
                       ) : (
-                        <Skeleton className="h-5 w-full max-w-[120px] rounded" />
+                        <Skeleton className="h-5 w-full max-w-30 rounded" />
                       )}
                     </TableCell>
                   ))}

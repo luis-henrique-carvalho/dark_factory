@@ -47,15 +47,15 @@ context: |
 
 rules:
   proposal:
-    - "Garanta que a proposta utilize modelagem plataforma-agnóstica (ex: platform_accounts em vez de youtube_channels)."
-    - "Defina explicitamente se haverá novos endpoints em rotas de API (/src/routes/api/v1/) ou alterações no banco de dados via Drizzle."
-    - "Esboce o plano de testes e o fluxo TDD para a implementação planejada, focando apenas no que é necessário."
+    - 'Garanta que a proposta utilize modelagem plataforma-agnóstica (ex: platform_accounts em vez de youtube_channels).'
+    - 'Defina explicitamente se haverá novos endpoints em rotas de API (/src/routes/api/v1/) ou alterações no banco de dados via Drizzle.'
+    - 'Esboce o plano de testes e o fluxo TDD para a implementação planejada, focando apenas no que é necessário.'
   spec:
-    - "Descreva a interface e contratos das APIs em formato de Server Routes."
-    - "Se houver alterações no banco de dados, defina a estrutura exata do schema do Drizzle ORM."
-    - "Siga fielmente a estrutura padrão de pastas do monolito modular (`src/modules/<module-name>`)."
-    - "Especifique os casos de teste essenciais (unitários, integração e browser) que deverão ser implementados."
+    - 'Descreva a interface e contratos das APIs em formato de Server Routes.'
+    - 'Se houver alterações no banco de dados, defina a estrutura exata do schema do Drizzle ORM.'
+    - 'Siga fielmente a estrutura padrão de pastas do monolito modular (`src/modules/<module-name>`).'
+    - 'Especifique os casos de teste essenciais (unitários, integração e browser) que deverão ser implementados.'
   tasks:
-    - "A primeira tarefa de desenvolvimento de código lógico deve ser sempre escrever os testes que falham (Fase Red do TDD)."
-    - "Divida as tarefas em fatias verticais (1. DB/Schema, 2. Backend/Endpoints & Testes, 3. Frontend/UI & Testes, 4. Integração Inngest/Jobs)."
-    - "Mantenha as tarefas pequenas, granulares e com critérios de aceite claros."
+    - 'A primeira tarefa de desenvolvimento de código lógico deve ser sempre escrever os testes que falham (Fase Red do TDD).'
+    - 'Divida as tarefas em fatias verticais (1. DB/Schema, 2. Backend/Endpoints & Testes, 3. Frontend/UI & Testes, 4. Integração Inngest/Jobs).'
+    - 'Mantenha as tarefas pequenas, granulares e com critérios de aceite claros.'

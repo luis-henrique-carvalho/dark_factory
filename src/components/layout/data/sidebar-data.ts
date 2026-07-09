@@ -11,13 +11,13 @@ import {
 } from 'lucide-react'
 import type { SidebarData } from '../types'
 
-export const sidebarData: SidebarData = {
-  user: {
-    name: 'Admin',
-    email: 'admin@darkfactory.ai',
-    avatar:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
-  },
+type SidebarUser = {
+  name?: string | null
+  email: string
+  image?: string | null
+}
+
+const navigationData = {
   teams: [
     {
       name: 'Dark Factory',
@@ -78,4 +78,24 @@ export const sidebarData: SidebarData = {
       ],
     },
   ],
+} satisfies Omit<SidebarData, 'user'>
+
+export const sidebarData: SidebarData = {
+  user: {
+    name: 'User',
+    email: '',
+    avatar: null,
+  },
+  ...navigationData,
+}
+
+export function createSidebarData(user: SidebarUser): SidebarData {
+  return {
+    user: {
+      name: user.name || user.email,
+      email: user.email,
+      avatar: user.image,
+    },
+    ...navigationData,
+  }
 }

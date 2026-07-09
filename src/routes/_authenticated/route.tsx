@@ -27,6 +27,7 @@ export const Route = createFileRoute('/_authenticated')({
 })
 
 function AuthenticatedLayout() {
+  const { session } = Route.useRouteContext()
   const defaultOpen = getCookie('sidebar_state') !== 'false'
 
   return (
@@ -34,7 +35,7 @@ function AuthenticatedLayout() {
       <LayoutProvider>
         <SidebarProvider defaultOpen={defaultOpen}>
           <SkipToMain />
-          <AppSidebar />
+          <AppSidebar user={session.user} />
           <SidebarInset
             className={cn(
               '@container/content',

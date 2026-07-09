@@ -6,13 +6,23 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '#/components/ui/sidebar'
-import { sidebarData } from './data/sidebar-data'
+import { createSidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
 
-export function AppSidebar() {
+type AppSidebarProps = {
+  user: {
+    name?: string | null
+    email: string
+    image?: string | null
+  }
+}
+
+export function AppSidebar({ user }: AppSidebarProps) {
   const { collapsible, variant } = useLayout()
+  const sidebarData = createSidebarData(user)
+
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>

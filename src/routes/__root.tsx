@@ -19,6 +19,7 @@ import { ThemeProvider } from '#/context/theme-provider'
 import { FontProvider } from '#/context/font-provider'
 import { DirectionProvider } from '#/context/direction-provider'
 import { Toaster } from '#/components/ui/sonner'
+import { NavigationProgress } from '#/components/navigation-progress'
 import type { Theme } from '#/context/theme-provider'
 
 interface MyRouterContext {
@@ -83,6 +84,7 @@ function RootComponent() {
       <ThemeProvider defaultTheme={initialTheme}>
         <FontProvider>
           <DirectionProvider>
+            <NavigationProgress />
             <Outlet />
             <Toaster />
           </DirectionProvider>

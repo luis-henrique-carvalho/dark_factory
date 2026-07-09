@@ -12,6 +12,7 @@ import type { SortingState, VisibilityState } from '@tanstack/react-table'
 import { cn } from '#/lib/utils'
 import { useTableUrlState } from '#/hooks/use-table-url-state'
 import type { NavigateFn } from '#/hooks/use-table-url-state'
+import { Skeleton } from '#/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -131,18 +132,22 @@ export function UsersTable({
           },
         ]}
       />
-      <div className="min-h-104 overflow-hidden rounded-md border bg-card">
-        <Table>
+      <div className="relative overflow-hidden rounded-md border">
+        {isLoading && data.length > 0 && (
+          <div className="absolute top-0 left-0 right-0 z-10 h-0.5 w-full bg-primary/10 overflow-hidden">
+            <div className="h-full bg-primary animate-pulse w-full" />
+          </div>
+        )}
+        <Table className="min-w-xl">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
                       colSpan={header.colSpan}
                       className={cn(
-                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         header.column.columnDef.meta?.className,
                         header.column.columnDef.meta?.thClassName,
                       )}
@@ -159,28 +164,51 @@ export function UsersTable({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-90 text-center text-muted-foreground"
-                >
-                  Loading users...
-                </TableCell>
-              </TableRow>
+          <TableBody className={cn(
+            isLoading && data.length > 0 && "opacity-50 pointer-events-none transition-opacity duration-200"
+          )}>
+            {isLoading && data.length === 0 ? (
+              Array.from({ length: Math.min(table.getState().pagination.pageSize || 10, 10) }).map((_, rowIndex) => (
+                <TableRow key={`skeleton-row-${rowIndex}`}>
+                  {table.getVisibleFlatColumns().map((column) => (
+                    <TableCell
+                      key={`skeleton-cell-${rowIndex}-${column.id}`}
+                      className={cn(
+                        column.columnDef.meta?.className,
+                        column.columnDef.meta?.tdClassName,
+                      )}
+                    >
+                      {column.id === 'select' ? (
+                        <Skeleton className="h-4 w-4 rounded" />
+                      ) : column.id === 'actions' ? (
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                      ) : column.id === 'status' ? (
+                        <Skeleton className="h-6 w-16 rounded-full" />
+                      ) : column.id === 'emailVerified' ? (
+                        <Skeleton className="h-6 w-20 rounded-full" />
+                      ) : column.id === 'role' ? (
+                        <Skeleton className="h-5 w-24 rounded" />
+                      ) : column.id === 'name' ? (
+                        <Skeleton className="h-5 w-32 rounded ms-3" />
+                      ) : column.id === 'email' ? (
+                        <Skeleton className="h-5 w-44 rounded ms-2" />
+                      ) : (
+                        <Skeleton className="h-5 w-full max-w-[120px] rounded" />
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className="group/row"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       className={cn(
-                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         cell.column.columnDef.meta?.className,
                         cell.column.columnDef.meta?.tdClassName,
                       )}
@@ -197,7 +225,7 @@ export function UsersTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-90 text-center"
+                  className="h-24 text-center"
                 >
                   No results.
                 </TableCell>
@@ -206,8 +234,13 @@ export function UsersTable({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
-      <DataTableBulkActions table={table} />
+      <div className={cn(
+        "mt-auto flex flex-col gap-4",
+        isLoading && "opacity-50 pointer-events-none transition-opacity duration-200"
+      )}>
+        <DataTablePagination table={table} />
+        <DataTableBulkActions table={table} />
+      </div>
     </div>
   )
 }

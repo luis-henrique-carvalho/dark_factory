@@ -8,6 +8,7 @@ import {
   Command,
   GalleryVerticalEnd,
   Users,
+  ListTodo,
 } from 'lucide-react'
 import type { SidebarData } from '../types'
 
@@ -43,6 +44,11 @@ const navigationData = {
           title: 'Users',
           url: '/users',
           icon: Users,
+        },
+        {
+          title: 'Tasks',
+          url: '/tasks',
+          icon: ListTodo,
         },
       ],
     },

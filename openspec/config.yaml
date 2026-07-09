@@ -34,14 +34,28 @@ context: |
   - Tabelas do banco de dados em `src/db/schema/` (ex: users.ts, creator-channels.ts, publications.ts).
   - Funções assíncronas do Inngest ficam em `src/inngest/functions/`.
 
+  Estrutura, Padrões e Metodologia de Testes (TDD):
+  - O projeto adota a metodologia TDD (Test-Driven Development) focando no ciclo Red-Green-Refactor.
+  - Nem tudo precisa ser testado, priorizando apenas o que for necessário para a estabilidade e regras de negócio.
+  - O framework de testes é o Vitest, dividido em dois ambientes dedicados:
+    1. Front-end (Browser Mode): `@vitest/browser-playwright` + `vitest-browser-react`. Foco em componentes React e DOM real. Arquivos `src/**/*.test.tsx`.
+    2. Back-end e Banco de Dados (Node Mode): Vitest + Drizzle ORM + PostgreSQL real em contêiner Docker dedicado na porta 5433 (gerenciado via docker-compose.test.yml). Rodados de forma sequencial (fileParallelism: false) para evitar colisões. Arquivos `src/**/*.test.ts`.
+  - Banco de Dados de Teste: Migrações são executadas no beforeAll (via setupTestDb) e a limpeza total via TRUNCATE ... CASCADE no beforeEach (via cleanDatabase).
+  - Convenções de Escrita:
+    * As descrições em `it` devem obrigatoriamente começar com "should" (ex: `it('should return 404 when user is not found')`).
+    * Testes de controladores/API devem ficar em `src/modules/<module>/server/controllers` (e nunca em `src/routes` para não quebrar a compilação do TanStack Router).
+
 rules:
   proposal:
     - "Garanta que a proposta utilize modelagem plataforma-agnóstica (ex: platform_accounts em vez de youtube_channels)."
     - "Defina explicitamente se haverá novos endpoints em rotas de API (/src/routes/api/v1/) ou alterações no banco de dados via Drizzle."
+    - "Esboce o plano de testes e o fluxo TDD para a implementação planejada, focando apenas no que é necessário."
   spec:
     - "Descreva a interface e contratos das APIs em formato de Server Routes."
     - "Se houver alterações no banco de dados, defina a estrutura exata do schema do Drizzle ORM."
     - "Siga fielmente a estrutura padrão de pastas do monolito modular (`src/modules/<module-name>`)."
+    - "Especifique os casos de teste essenciais (unitários, integração e browser) que deverão ser implementados."
   tasks:
-    - "Divida as tarefas em fatias verticais (1. DB/Schema, 2. Backend/Endpoints, 3. Frontend/UI, 4. Integração Inngest/Jobs)."
+    - "A primeira tarefa de desenvolvimento de código lógico deve ser sempre escrever os testes que falham (Fase Red do TDD)."
+    - "Divida as tarefas em fatias verticais (1. DB/Schema, 2. Backend/Endpoints & Testes, 3. Frontend/UI & Testes, 4. Integração Inngest/Jobs)."
     - "Mantenha as tarefas pequenas, granulares e com critérios de aceite claros."

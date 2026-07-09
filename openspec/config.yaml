@@ -1,20 +1,47 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+# Contexto do projeto baseado na documentação atual do Creator Factory AI
+context: |
+  Você está trabalhando no Creator Factory AI (anteriormente Dark Channel Factory ou Faceless Content OS).
+  É uma plataforma pessoal de automação para criação, renderização e agendamento de conteúdos para canais dark/faceless.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Domínio & Regras de Negócio:
+  - O produto central é conteúdo (vídeos, roteiros, narrações, assets).
+  - Distribuição (YouTube, TikTok, Instagram) é tratada por adapters de distribuição.
+  - A modelagem do banco de dados e do domínio deve ser PLATAFORMA-AGNÓSTICA.
+    * Evitar prefixos como: youtube_videos, youtube_uploads, youtube_channels, youtube_schedules.
+    * Preferir: platform_accounts, platform_publications, publication_plans, brands, distribution_profiles, rendered_videos.
+  - O MVP foca em YouTube (Shorts e Long Form), mas o design precisa prever multi-plataformas.
+  - Há uma revisão humana obrigatória antes de qualquer publicação ou agendamento.
+
+  Stack Tecnológica:
+  - Framework: TanStack Start (Full-Stack React)
+  - Roteamento: TanStack Router (Rotas tipadas, layouts, search params)
+  - Server State: TanStack Query (Query, Mutations, Cache)
+  - UI & Estilização: Tailwind CSS, shadcn/ui e inspirações de layout do shadcn-admin
+  - Formulários & Validação: React Hook Form com schemas Zod
+  - Banco de Dados: PostgreSQL com Drizzle ORM / Drizzle Kit
+  - Workflows Assíncronos: Inngest (execução de jobs como geração e publicação)
+  - Processamento de Mídia: FFmpeg (renderização e composição de vídeos)
+  - Storage: Cloudflare R2 ou compatível com S3
+  - API Principal: Server Routes HTTP explicitos (/src/routes/api/v1/...) em vez de Server Functions para facilitar desacoplamento futuro do backend.
+
+  Estrutura de Pastas (Monolito Modular):
+  - A lógica é organizada por módulos em `src/modules/<module-name>/`.
+  - Cada módulo é composto por subpastas (views, components, hooks, schemas, services, server).
+    * `server/` dentro de cada módulo organiza: controllers, services, repositories, policies, errors e dtos.
+  - Rotas de frontend ficam em `src/routes/` e rotas de API em `src/routes/api/v1/`.
+  - Tabelas do banco de dados em `src/db/schema/` (ex: users.ts, creator-channels.ts, publications.ts).
+  - Funções assíncronas do Inngest ficam em `src/inngest/functions/`.
+
+rules:
+  proposal:
+    - "Garanta que a proposta utilize modelagem plataforma-agnóstica (ex: platform_accounts em vez de youtube_channels)."
+    - "Defina explicitamente se haverá novos endpoints em rotas de API (/src/routes/api/v1/) ou alterações no banco de dados via Drizzle."
+  spec:
+    - "Descreva a interface e contratos das APIs em formato de Server Routes."
+    - "Se houver alterações no banco de dados, defina a estrutura exata do schema do Drizzle ORM."
+    - "Siga fielmente a estrutura padrão de pastas do monolito modular (`src/modules/<module-name>`)."
+  tasks:
+    - "Divida as tarefas em fatias verticais (1. DB/Schema, 2. Backend/Endpoints, 3. Frontend/UI, 4. Integração Inngest/Jobs)."
+    - "Mantenha as tarefas pequenas, granulares e com critérios de aceite claros."

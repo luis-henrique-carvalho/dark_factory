@@ -124,11 +124,11 @@ Como sistema, quero associar canais, contas e projetos ao usuário autenticado.
 
 ---
 
-# EPIC 03 — Gestão de canais internos
+# EPIC 03 — Gestão de marcas
 
 ## Objetivo
 
-Permitir que o usuário crie e gerencie canais internos de conteúdo.
+Permitir que o usuário crie e gerencie marcas de conteúdo.
 
 ## Prioridade
 
@@ -136,14 +136,15 @@ Permitir que o usuário crie e gerencie canais internos de conteúdo.
 
 ## Descrição
 
-Um canal interno representa uma linha editorial ou marca de conteúdo dentro da plataforma. Ele não deve ser acoplado diretamente ao YouTube, pois futuramente poderá publicar em várias plataformas.
+Uma marca representa uma linha editorial ou marca de conteúdo dentro da plataforma. Ela não deve ser acoplada diretamente ao YouTube, pois futuramente poderá publicar em várias plataformas.
+Para otimizar a visualização de métricas e calendários por marca, a chave estrangeira `brand_id` é desnormalizada e incluída diretamente em tabelas associadas como `publication_plans` e `distribution_profiles`.
 
 ## Entregáveis
 
-- Criar canal interno.
-- Listar canais.
-- Editar canal.
-- Arquivar canal.
+- Criar marca.
+- Listar marcas.
+- Editar marca.
+- Arquivar marca.
 - Definir nicho.
 - Definir idioma.
 - Definir tom padrão.
@@ -153,34 +154,34 @@ Um canal interno representa uma linha editorial ou marca de conteúdo dentro da 
 ## Entidade principal
 
 ```text
-creator_channels
+brands
 ```
 
 ## User stories
 
-### US-008 — Criar canal interno
+### US-008 — Criar marca
 
-Como usuário, quero criar um canal interno para organizar meus conteúdos por nicho.
+Como usuário, quero criar uma marca para organizar meus conteúdos por nicho.
 
-### US-009 — Definir nicho do canal
+### US-009 — Definir nicho da marca
 
-Como usuário, quero definir o nicho do canal para orientar a geração de ideias e roteiros.
+Como usuário, quero definir o nicho da marca para orientar a geração de ideias e roteiros.
 
 ### US-010 — Definir idioma e tom
 
 Como usuário, quero configurar idioma e tom padrão para padronizar os vídeos gerados.
 
-### US-011 — Arquivar canal
+### US-011 — Arquivar marca
 
-Como usuário, quero arquivar canais que não estou mais usando.
+Como usuário, quero arquivar marcas que não estou mais usando.
 
 ## Critérios de aceite
 
-- O usuário consegue criar um canal.
-- O canal possui nome, nicho, idioma e status.
-- O canal pode ser editado.
-- O canal pode ser arquivado.
-- Canais arquivados não aparecem como opção padrão em novos projetos.
+- O usuário consegue criar uma marca.
+- A marca possui nome, nicho, idioma e status.
+- A marca pode ser editada.
+- A marca pode ser arquivada.
+- Marcas arquivadas não aparecem como opção padrão em novos projetos.
 
 ---
 
@@ -196,7 +197,8 @@ Criar perfis de distribuição para diferenciar YouTube Shorts, YouTube Long For
 
 ## Descrição
 
-O sistema deve separar canal, conteúdo e formato de distribuição. Um canal pode ter um perfil para Shorts e outro para vídeos longos.
+O sistema deve separar marca, conteúdo e formato de distribuição. Uma marca pode ter um perfil para Shorts e outro para vídeos longos.
+A modelagem adota uma relação de 1-para-Muitos entre projetos de conteúdo e vídeos renderizados. Isso permite que um único projeto de conteúdo seja renderizado em múltiplos formatos (Shorts em 9:16 e vídeo longo em 16:9), reaproveitando o mesmo roteiro, narração e ativos criados pela IA.
 
 ## Entregáveis
 
@@ -237,7 +239,7 @@ Como usuário, quero definir horários padrão de postagem para facilitar o agen
 
 ## Critérios de aceite
 
-- Um canal pode ter múltiplos perfis de distribuição.
+- Uma marca pode ter múltiplos perfis de distribuição.
 - Shorts e Long Form possuem configurações diferentes.
 - O perfil pode ser usado na criação de projetos.
 - O sistema não trata Shorts e Long Form como plataformas diferentes, mas como formatos diferentes.
@@ -257,15 +259,16 @@ Criar a estrutura genérica de contas externas conectadas, começando pelo YouTu
 ## Descrição
 
 Este épico prepara o sistema para conectar contas externas. No MVP, apenas YouTube será implementado, mas a modelagem deve suportar TikTok, Instagram, Kwai e Facebook no futuro.
+Por motivos de segurança, todos os tokens de acesso e de atualização OAuth serão armazenados criptografados simetricamente usando chave de ambiente (`ENCRYPTION_KEY`). O vínculo entre marca e canais físicos específicos de publicação será feito de forma flexível através da tabela de ligação `brand_platform_accounts`.
 
 ## Entregáveis
 
 - Tabela `platform_accounts`.
-- Tabela `channel_platform_accounts`.
+- Tabela `brand_platform_accounts`.
 - Enum de plataformas.
 - Status de conexão.
 - Armazenamento criptografado de tokens.
-- Associação entre canal interno e conta externa.
+- Associação entre marca e conta externa.
 - Tela de contas conectadas.
 
 ## User stories
@@ -274,18 +277,18 @@ Este épico prepara o sistema para conectar contas externas. No MVP, apenas YouT
 
 Como usuário, quero visualizar contas externas conectadas à plataforma.
 
-### US-016 — Associar conta ao canal
+### US-016 — Associar conta à marca
 
-Como usuário, quero associar uma conta externa a um canal interno.
+Como usuário, quero associar uma conta externa a uma marca.
 
 ### US-017 — Definir conta padrão
 
-Como usuário, quero definir uma conta padrão de publicação para cada canal e plataforma.
+Como usuário, quero definir uma conta padrão de publicação para cada marca e plataforma.
 
 ## Critérios de aceite
 
 - O sistema possui estrutura genérica para plataformas.
-- O canal interno pode ser associado a uma conta externa.
+- A marca pode ser associada a uma conta externa.
 - Não é possível publicar sem conta conectada.
 - Tokens são armazenados de forma segura.
 
@@ -360,7 +363,7 @@ Um projeto de conteúdo é a unidade principal da fábrica. Ele agrupa ideia, ro
 - Criar projeto.
 - Listar projetos.
 - Editar projeto.
-- Selecionar canal.
+- Selecionar marca.
 - Selecionar formato.
 - Definir tema.
 - Definir objetivo.
@@ -389,7 +392,7 @@ Como usuário, quero acompanhar em qual etapa o projeto está.
 
 ## Critérios de aceite
 
-- Projeto pertence a um canal.
+- Projeto pertence a uma marca.
 - Projeto possui formato.
 - Projeto possui status.
 - Projeto pode evoluir pelos status da pipeline.
@@ -401,7 +404,7 @@ Como usuário, quero acompanhar em qual etapa o projeto está.
 
 ## Objetivo
 
-Gerar ideias de vídeos baseadas no nicho, canal, formato e objetivo do conteúdo.
+Gerar ideias de vídeos baseadas no nicho, marca, formato e objetivo do conteúdo.
 
 ## Prioridade
 
@@ -409,7 +412,7 @@ Gerar ideias de vídeos baseadas no nicho, canal, formato e objetivo do conteúd
 
 ## Descrição
 
-O usuário deve conseguir pedir ideias para um canal e formato específico. A IA deve gerar ideias com título preliminar, ângulo, gancho e justificativa.
+O usuário deve conseguir pedir ideias para uma marca e formato específico. A IA deve gerar ideias com título preliminar, ângulo, gancho e justificativa.
 
 ## Entregáveis
 
@@ -425,7 +428,7 @@ O usuário deve conseguir pedir ideias para um canal e formato específico. A IA
 
 ### US-024 — Gerar ideias
 
-Como usuário, quero gerar ideias de vídeos para um canal específico.
+Como usuário, quero gerar ideias de vídeos para uma marca específica.
 
 ### US-025 — Escolher ideia
 
@@ -437,7 +440,7 @@ Como usuário, quero regenerar ideias quando as sugestões forem ruins.
 
 ## Critérios de aceite
 
-- IA gera ideias com base no canal.
+- IA gera ideias com base na marca.
 - Ideias respeitam idioma, nicho e formato.
 - Usuário consegue selecionar uma ideia.
 - Ideias geradas são persistidas.
@@ -579,7 +582,7 @@ A plataforma deve transformar o roteiro aprovado em narração usando um provide
 - Salvamento do áudio.
 - Status de geração.
 - Retry em caso de falha.
-- Configuração de voz por canal.
+- Configuração de voz por marca.
 - Preview da narração.
 
 ## Entidade principal
@@ -857,7 +860,7 @@ platform_publications
 
 - Criar plano de publicação.
 - Associar vídeo renderizado.
-- Associar canal interno.
+- Associar marca.
 - Criar publicação YouTube.
 - Status de publicação.
 - Dados de título, descrição, tags e thumbnail.
@@ -1065,13 +1068,13 @@ Permitir visualizar e gerenciar publicações programadas.
 
 ## Descrição
 
-A agenda editorial ajuda o usuário a planejar vídeos por data, canal e formato.
+A agenda editorial ajuda o usuário a planejar vídeos por data, marca e formato.
 
 ## Entregáveis
 
 - Calendário de publicações.
 - Lista de agendados.
-- Filtro por canal.
+- Filtro por marca.
 - Filtro por status.
 - Filtro por formato.
 - Reagendamento.
@@ -1088,14 +1091,14 @@ Como usuário, quero visualizar os vídeos agendados em calendário.
 
 Como usuário, quero mudar a data de uma publicação antes dela ir ao ar.
 
-### US-064 — Filtrar por canal
+### US-064 — Filtrar por marca
 
-Como usuário, quero filtrar a agenda por canal.
+Como usuário, quero filtrar a agenda por marca.
 
 ## Critérios de aceite
 
 - Publicações agendadas aparecem no calendário.
-- Usuário pode filtrar por canal e formato.
+- Usuário pode filtrar por marca e formato.
 - Agendamentos no passado são bloqueados.
 - Reagendamento atualiza status e dados da plataforma quando aplicável.
 
@@ -1248,7 +1251,7 @@ Como usuário, quero saber o custo estimado de cada geração.
 
 ## Objetivo
 
-Permitir gerar múltiplos projetos de conteúdo a partir de um canal, formato e período.
+Permitir gerar múltiplos projetos de conteúdo a partir de uma marca, formato e período.
 
 ## Prioridade
 
@@ -1260,7 +1263,7 @@ A Content Factory em lote será uma das features principais da plataforma, permi
 
 ## Entregáveis
 
-- Escolher canal.
+- Escolher marca.
 - Escolher formato.
 - Definir quantidade de vídeos.
 - Definir período.
@@ -1273,7 +1276,7 @@ A Content Factory em lote será uma das features principais da plataforma, permi
 
 ### US-074 — Gerar calendário semanal
 
-Como usuário, quero gerar uma semana de ideias para um canal.
+Como usuário, quero gerar uma semana de ideias para uma marca.
 
 ### US-075 — Criar múltiplos projetos
 
@@ -1358,7 +1361,7 @@ Após publicação, o sistema poderá acompanhar performance para alimentar deci
 - Comentários.
 - Status de publicação.
 - Histórico de métricas.
-- Tela de performance por canal.
+- Tela de performance por marca.
 - Performance por formato.
 
 ## User stories
@@ -1379,7 +1382,7 @@ Como usuário, quero entender quais temas performam melhor.
 
 - Sistema importa métricas básicas.
 - Métricas são vinculadas à publicação.
-- Usuário consegue filtrar por canal.
+- Usuário consegue filtrar por marca.
 - Métricas podem ser usadas futuramente para recomendar ideias.
 
 ---
@@ -1514,7 +1517,7 @@ EPIC 22 — Storage de arquivos
 Com esses épicos, o sistema já consegue cumprir o fluxo principal:
 
 ```text
-Criar canal
+Criar marca
 → Gerar roteiro
 → Gerar narração
 → Gerar assets

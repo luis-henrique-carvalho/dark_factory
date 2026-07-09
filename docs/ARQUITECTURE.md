@@ -38,7 +38,7 @@ Preferir:
 platform_accounts
 platform_publications
 publication_plans
-creator_channels
+brands
 distribution_profiles
 rendered_videos
 ```
@@ -818,7 +818,7 @@ Não devem ser a única fonte de regras como:
 ```txt
 - não publicar sem aprovação;
 - não agendar no passado;
-- não criar projeto em canal arquivado;
+- não criar projeto em marca arquivada;
 - não gerar vídeo sem roteiro aprovado;
 - não publicar sem conta conectada.
 ```
@@ -1019,8 +1019,8 @@ Responsabilidades:
 Exemplo de regras que ficam no service:
 
 ```txt
-- canal precisa pertencer ao usuário;
-- canal precisa estar ativo;
+- marca precisa pertencer ao usuário;
+- marca precisa estar ativa;
 - projeto não pode avançar se estiver arquivado;
 - roteiro precisa estar aprovado antes de gerar narração;
 - vídeo precisa estar renderizado antes da publicação;
@@ -1139,17 +1139,17 @@ Exemplo:
 
 ```ts
 export const contentProjectsPolicy = {
-  ensureCanCreate({ userId, channel }: EnsureCanCreateInput) {
-    if (!channel) {
-      throw new NotFoundError('Canal não encontrado')
+  ensureCanCreate({ userId, brand }: EnsureCanCreateInput) {
+    if (!brand) {
+      throw new NotFoundError('Marca não encontrada')
     }
 
-    if (channel.userId !== userId) {
-      throw new ForbiddenError('Você não tem acesso a este canal')
+    if (brand.userId !== userId) {
+      throw new ForbiddenError('Você não tem acesso a esta marca')
     }
 
-    if (channel.status === 'archived') {
-      throw new DomainError('Não é possível criar conteúdo em canal arquivado')
+    if (brand.status === 'archived') {
+      throw new DomainError('Não é possível criar conteúdo em marca arquivada')
     }
   },
 }
@@ -1627,7 +1627,7 @@ TikTok e Instagram podem existir apenas como placeholders ou interfaces vazias, 
 
 ## 14. Modelagem de dados base
 
-### 14.1 `creator_channels`
+### 14.1 `brands`
 
 ```txt
 id
@@ -1647,7 +1647,7 @@ updated_at
 
 ```txt
 id
-creator_channel_id
+brand_id
 platform
 content_format
 default_title_style
@@ -1680,11 +1680,11 @@ created_at
 updated_at
 ```
 
-### 14.4 `channel_platform_accounts`
+### 14.4 `brand_platform_accounts`
 
 ```txt
 id
-creator_channel_id
+brand_id
 platform_account_id
 platform
 external_channel_id
@@ -1698,7 +1698,7 @@ updated_at
 
 ```txt
 id
-creator_channel_id
+brand_id
 title
 topic
 niche
@@ -1769,7 +1769,7 @@ updated_at
 id
 content_project_id
 rendered_video_id
-creator_channel_id
+brand_id
 status
 created_at
 updated_at
@@ -2004,7 +2004,7 @@ Elementos a aproveitar:
 
 ```txt
 Dashboard
-Canais
+Marcas
 Content Factory
 Projetos
 Publicações
@@ -2218,7 +2218,7 @@ Regras críticas sempre ficam no backend.
 Exemplos:
 
 ```txt
-- não criar projeto em canal arquivado;
+- não criar projeto em marca arquivada;
 - não gerar narração sem roteiro aprovado;
 - não renderizar sem assets mínimos;
 - não publicar sem vídeo renderizado;
@@ -2276,7 +2276,7 @@ Todo fluxo assíncrono deve registrar logs.
 ### 24.1 O que registrar
 
 ```txt
-- criação de canal;
+- criação de marca;
 - criação de projeto;
 - geração de ideia;
 - geração de roteiro;
@@ -2667,3 +2667,23 @@ Para garantir testes realistas, as requisições de backend utilizam uma base Po
 - `npm run test:integration` - Carrega as variáveis de `.env.test` e executa os testes de integração do Node/DB.
 - `npm run test:browser` - Executa os testes de frontend rodando no navegador Chromium headless.
 - `npm run db:test:down` - Encerra o contêiner Docker do banco de testes.
+
+---
+
+## 31. Decisões de Design e Modelagem de Dados
+
+Para apoiar a publicação automatizada e multiplataforma de conteúdos de forma segura e performática, as seguintes decisões estruturais foram definidas e devem ser respeitadas na codificação do banco de dados e APIs:
+
+### 31.1 Desnormalização de `brand_id` para Otimização de Consultas
+A chave estrangeira `brand_id` está intencionalmente desnormalizada e presente em tabelas como `publication_plans` e `distribution_profiles`. Embora esses dados pudessem ser inferidos fazendo o JOIN com `content_projects`, a duplicação direta permite:
+- Executar queries de filtragem extremamente rápidas na Agenda Editorial (calendário de postagens) por Marca.
+- Simplificar e acelerar a busca direta de perfis e métricas sem encadeamento de múltiplos JOINs custosos.
+
+### 31.2 Reaproveitamento Multiformato (1-para-Muitos em Vídeos Renderizados)
+A tabela `rendered_videos` possui relação de 1-para-Muitos com `content_projects`. Isso permite que um único projeto de conteúdo (com o mesmo roteiro e narração de base) possua múltiplos vídeos renderizados para formatos diferentes (ex: Shorts em 9:16 e vídeo longo em 16:9), promovendo o reaproveitamento nativo de assets.
+
+### 31.3 Criptografia Simétrica de Tokens de Acesso OAuth
+Os tokens armazenados na tabela `platform_accounts` (`access_token_encrypted` e `refresh_token_encrypted`) devem ser criptografados utilizando algoritmos simétricos robustos (ex: `AES-256-GCM`). A chave de decodificação deve ser gerenciada em nível de sistema por meio da variável de ambiente `ENCRYPTION_KEY`, garantindo que credenciais comprometidas em vazamentos de banco de dados permaneçam seguras.
+
+### 31.4 Mapeamento entre Conta Autenticada e Destinos Específicos
+A tabela `brand_platform_accounts` serve como ponte de muitos-para-muitos. Isso resolve o cenário onde um único login de rede social (ex: login de agência no Google OAuth registrado em `platform_accounts`) gerencia múltiplos canais do YouTube reais (IDs individuais guardados em `external_channel_id`). O sistema vincula a Marca do usuário a um destino específico de publicação, não apenas ao login genérico.

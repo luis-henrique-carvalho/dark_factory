@@ -16,7 +16,7 @@ Outras opções futuras:
 
 ## 2. Resumo executivo
 
-A plataforma será uma aplicação pessoal, inicialmente focada em **YouTube**, para criação automatizada de conteúdos de canais dark/faceless com IA. O sistema permitirá criar canais internos, gerar ideias, roteiros, narrações, assets visuais, vídeos finais em formato **Shorts** ou **vídeos longos**, gerar metadados de publicação e agendar postagem em canais do YouTube.
+A plataforma será uma aplicação pessoal, inicialmente focada em **YouTube**, para criação automatizada de conteúdos de canais dark/faceless com IA. O sistema permitirá criar marcas, gerar ideias, roteiros, narrações, assets visuais, vídeos finais em formato **Shorts** ou **vídeos longos**, gerar metadados de publicação e agendar postagem em canais do YouTube.
 
 Embora o MVP seja exclusivo para YouTube, a arquitetura deve nascer preparada para integrações futuras com outras plataformas, como TikTok, Instagram Reels, Kwai e Facebook Reels. O YouTube será tratado como o **primeiro adapter de distribuição**, não como o centro do domínio.
 
@@ -30,7 +30,7 @@ Criar uma plataforma pessoal que funcione como uma **fábrica de conteúdo com I
 
 O sistema deve permitir que o usuário:
 
-1. Cadastre canais internos de conteúdo.
+1. Cadastre marcas de conteúdo.
 2. Defina nicho, idioma, formato e frequência.
 3. Gere ideias de vídeos.
 4. Gere roteiros completos.
@@ -55,7 +55,7 @@ O MVP deve suportar:
   - YouTube Shorts.
   - YouTube Long Form.
 
-- Cadastro de canais internos.
+- Cadastro de marcas.
 - Conexão com conta/canal do YouTube via OAuth.
 - Criação de projetos de conteúdo.
 - Geração de ideias com IA.
@@ -120,7 +120,7 @@ Preferir:
 platform_accounts
 platform_publications
 publication_plans
-creator_channels
+brands
 rendered_videos
 distribution_profiles
 ```
@@ -151,11 +151,11 @@ Possível usuário futuro caso vire SaaS.
 
 Necessidades:
 
-- Gerenciar vários canais.
+- Gerenciar várias marcas.
 - Criar calendários editoriais.
 - Produzir conteúdo em lote.
 - Ter aprovação por etapas.
-- Ver performance por canal.
+- Ver performance por marca.
 - Gerenciar equipes.
 
 ---
@@ -165,7 +165,7 @@ Necessidades:
 ### 7.1 Fluxo principal
 
 ```text
-1. Usuário cria um canal interno
+1. Usuário cria uma marca
    ↓
 2. Define nicho, idioma, estilo e formato
    ↓
@@ -200,16 +200,16 @@ Necessidades:
 
 ## 8. Funcionalidades do MVP
 
-## 8.1 Módulo de canais
+## 8.1 Módulo de marcas
 
 ### Descrição
 
-Permitir cadastrar canais internos da plataforma. Um canal interno representa uma linha editorial ou marca de conteúdo, não necessariamente uma conta de plataforma externa.
+Permitir cadastrar marcas da plataforma. Uma marca representa uma linha editorial ou marca de conteúdo, não necessariamente uma conta de plataforma externa.
 
 ### Campos principais
 
 ```text
-creator_channels
+brands
 - id
 - user_id
 - name
@@ -225,11 +225,11 @@ creator_channels
 
 ### Regras de negócio
 
-- Um usuário pode ter vários canais internos.
-- Cada canal deve ter um nicho principal.
-- Cada canal deve ter um idioma padrão.
-- Cada canal pode ter múltiplos perfis de distribuição.
-- Um canal interno pode ser conectado a uma ou mais contas externas no futuro.
+- Um usuário pode ter várias marcas.
+- Cada marca deve ter um nicho principal.
+- Cada marca deve ter um idioma padrão.
+- Cada marca pode ter múltiplos perfis de distribuição.
+- Uma marca pode ser conectada a uma ou mais contas externas no futuro.
 - No MVP, somente conexão com YouTube será implementada.
 
 ---
@@ -287,18 +287,18 @@ youtube
 
 ---
 
-## 8.3 Ligação entre canal interno e conta externa
+## 8.3 Ligação entre marca e conta externa
 
 ### Descrição
 
-Permitir associar um canal interno a uma conta/canal externo.
+Permitir associar uma marca a uma conta/canal externo.
 
 ### Campos principais
 
 ```text
-channel_platform_accounts
+brand_platform_accounts
 - id
-- creator_channel_id
+- brand_id
 - platform_account_id
 - platform
 - external_channel_id
@@ -310,9 +310,9 @@ channel_platform_accounts
 
 ### Regras de negócio
 
-- No MVP, cada canal interno pode ter uma conta YouTube padrão.
-- Futuramente, o mesmo canal interno poderá publicar em YouTube, TikTok e Instagram.
-- Um canal interno pode ter apenas uma conta padrão por plataforma.
+- No MVP, cada marca pode ter uma conta YouTube padrão.
+- Futuramente, a mesma marca poderá publicar em YouTube, TikTok e Instagram.
+- Uma marca pode ter apenas uma conta padrão por plataforma.
 - Não permitir publicação em plataforma sem conta conectada.
 
 ---
@@ -380,7 +380,7 @@ archived
 
 ### Regras de negócio
 
-- Todo conteúdo deve pertencer a um canal interno.
+- Todo conteúdo deve pertencer a uma marca.
 - Todo conteúdo deve ter um formato de distribuição inicial.
 - O conteúdo não pode ser publicado sem vídeo renderizado.
 - O conteúdo não pode ser publicado sem aprovação humana.
@@ -690,7 +690,7 @@ O recurso de vídeo do YouTube possui `status.publishAt`; quando usado para agen
 
 ## 9.1 Regras de criação de conteúdo
 
-1. Todo conteúdo deve pertencer a um canal interno.
+1. Todo conteúdo deve pertencer a uma marca.
 2. Todo conteúdo deve ter nicho, idioma e formato.
 3. Todo conteúdo gerado por IA deve passar por revisão humana antes da publicação.
 4. O sistema deve evitar geração massiva sem aprovação.
@@ -790,12 +790,12 @@ A documentação da YouTube Data API usa sistema de quota, e há requisitos de a
 
 ## 10. Requisitos funcionais
 
-## 10.1 Canais
+## 10.1 Marcas
 
-- RF-001: Criar canal interno.
-- RF-002: Editar nicho, idioma e estilo do canal.
-- RF-003: Arquivar canal.
-- RF-004: Definir formato padrão do canal.
+- RF-001: Criar marca.
+- RF-002: Editar nicho, idioma e estilo da marca.
+- RF-003: Arquivar marca.
+- RF-004: Definir formato padrão da marca.
 - RF-005: Definir frequência desejada de publicação.
 
 ## 10.2 Integração YouTube
@@ -803,7 +803,7 @@ A documentação da YouTube Data API usa sistema de quota, e há requisitos de a
 - RF-006: Conectar conta Google/YouTube via OAuth.
 - RF-007: Salvar tokens de forma criptografada.
 - RF-008: Renovar tokens automaticamente.
-- RF-009: Associar conta YouTube a canal interno.
+- RF-009: Associar conta YouTube a marca.
 - RF-010: Desconectar conta YouTube.
 - RF-011: Validar permissões antes de upload.
 
@@ -1285,7 +1285,7 @@ src/
 
 ## 17. Modelo de dados inicial
 
-## 17.1 `creator_channels`
+## 17.1 `brands`
 
 ```text
 id
@@ -1318,11 +1318,11 @@ created_at
 updated_at
 ```
 
-## 17.3 `channel_platform_accounts`
+## 17.3 `brand_platform_accounts`
 
 ```text
 id
-creator_channel_id
+brand_id
 platform_account_id
 platform
 external_channel_id
@@ -1336,7 +1336,7 @@ updated_at
 
 ```text
 id
-creator_channel_id
+brand_id
 platform
 content_format
 default_title_style
@@ -1356,7 +1356,7 @@ updated_at
 
 ```text
 id
-creator_channel_id
+brand_id
 title
 topic
 niche
@@ -1373,7 +1373,7 @@ updated_at
 
 ```text
 id
-creator_channel_id
+brand_id
 platform
 url
 external_video_id
@@ -1447,7 +1447,7 @@ updated_at
 id
 content_project_id
 rendered_video_id
-creator_channel_id
+brand_id
 status
 created_at
 updated_at
@@ -1490,6 +1490,15 @@ metadata_json
 created_at
 ```
 
+## 17.13 Diretrizes de Design e Modelagem de Dados
+
+Para apoiar a publicação automatizada e multiplataforma de conteúdos de forma segura e performática, as seguintes diretrizes estruturais são adotadas na modelagem física do banco de dados:
+
+1. **Desnormalização de `brand_id`:** O `brand_id` (identificador da marca) está presente de forma desnormalizada e redundante em tabelas como `publication_plans` e `distribution_profiles`. Isso serve para otimizar queries e filtros de performance da Agenda Editorial (calendário de postagens) por Marca na interface, evitando JOINs custosos.
+2. **Reaproveitamento Multiformato:** A relação `1-para-Muitos` entre `content_projects` e `rendered_videos` permite que um único projeto de conteúdo (mesmo roteiro, narração e assets) tenha múltiplos vídeos renderizados em diferentes proporções e resoluções (ex: 9:16 para Shorts e 16:9 para vídeos longos), permitindo o reaproveitamento nativo de assets de geração por IA.
+3. **Segurança de Tokens:** Os tokens de plataformas em `platform_accounts` devem ser armazenados criptografados usando criptografia simétrica AES-256 baseada em uma chave secreta fornecida via variável de ambiente (`ENCRYPTION_KEY`).
+4. **Mapeamento Flexível de Canal/Conta:** A tabela de associação `brand_platform_accounts` permite vincular a Marca a um destino de publicação (`external_channel_id` específico) utilizando uma conta autenticada (`platform_account_id`), suportando cenários em que uma única credencial gerencia múltiplos canais.
+
 ---
 
 ## 18. Telas do MVP
@@ -1505,11 +1514,11 @@ Mostrar:
 - publicações agendadas;
 - falhas recentes.
 
-## 18.2 Canais
+## 18.2 Marcas
 
 Funcionalidades:
 
-- criar canal;
+- criar marca;
 - editar nicho;
 - configurar idioma;
 - configurar estilo;
@@ -1523,7 +1532,7 @@ Tela central do sistema.
 
 Campos:
 
-- canal;
+- marca;
 - formato;
 - nicho;
 - quantidade de vídeos;
@@ -1677,7 +1686,7 @@ Entregas:
 
 O MVP será considerado funcional quando o usuário conseguir:
 
-1. Criar um canal interno.
+1. Criar uma marca.
 2. Conectar um canal do YouTube.
 3. Criar um projeto de conteúdo.
 4. Gerar um roteiro com IA.
@@ -1698,7 +1707,7 @@ Mesmo sendo pessoal, o sistema deve registrar:
 - tempo médio para gerar narração;
 - tempo médio para renderizar vídeo;
 - taxa de falha por etapa;
-- número de vídeos criados por canal;
+- número de vídeos criados por marca;
 - número de vídeos publicados;
 - número de vídeos reprocessados;
 - custo estimado por vídeo;

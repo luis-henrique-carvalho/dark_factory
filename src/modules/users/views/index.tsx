@@ -32,7 +32,6 @@ export function UsersView() {
         <Search className="me-auto" />
         <ThemeSwitch />
         <ConfigDrawer />
-        <ProfileDropdown />
       </Header>
 
       <Main className="flex flex-1 flex-col gap-4 sm:gap-6">

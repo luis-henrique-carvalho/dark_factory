@@ -102,4 +102,3 @@ export type EventPayloads = {
 export const inngest = new Inngest({
   id: 'dark-factory',
 })
-

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'
 import { showSubmittedData } from '@/lib/show-submitted-data'
-import type {Task} from '../data/schema';
+import type { Task } from '../data/schema'
 import { TasksMutateDrawer } from './tasks-mutate-drawer'
 
 vi.mock('@/lib/show-submitted-data', () => ({ showSubmittedData: vi.fn() }))

@@ -1,5 +1,5 @@
-import { useState  } from 'react'
-import type {JSX} from 'react';
+import { useState } from 'react'
+import type { JSX } from 'react'
 import { useLocation, useNavigate, Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'

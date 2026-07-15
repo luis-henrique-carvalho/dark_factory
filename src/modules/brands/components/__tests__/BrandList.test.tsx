@@ -1,6 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'
+import {
+  Outlet,
+  RouterProvider,
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from '@tanstack/react-router'
 import { BrandList } from '../BrandList'
 import type { Brand } from '../../schemas'
 
@@ -17,11 +25,33 @@ const BRANDS = [
   },
 ] satisfies Brand[]
 
+function renderBrandList(props: React.ComponentProps<typeof BrandList>) {
+  const rootRoute = createRootRoute({ component: () => <Outlet /> })
+  const brandsRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/',
+    component: () => <BrandList {...props} />,
+  })
+  const profilesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/distribution-profiles/$brandId',
+    component: () => null,
+  })
+  const router = createRouter({
+    routeTree: rootRoute.addChildren([brandsRoute, profilesRoute]),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
+  })
+
+  return render(<RouterProvider router={router} />)
+}
+
 describe('BrandList', () => {
   it('should render brand cards with name, niche, language, and status', async () => {
-    const { getByRole, getByText } = await render(
-      <BrandList brands={BRANDS} onEdit={vi.fn()} onArchive={vi.fn()} />,
-    )
+    const { getByRole, getByText } = await renderBrandList({
+      brands: BRANDS,
+      onEdit: vi.fn(),
+      onArchive: vi.fn(),
+    })
 
     await expect
       .element(getByRole('heading', { name: 'Dark Shorts' }))
@@ -34,9 +64,11 @@ describe('BrandList', () => {
   it('should call edit and archive handlers from card actions', async () => {
     const onEdit = vi.fn()
     const onArchive = vi.fn()
-    const { getByRole } = await render(
-      <BrandList brands={BRANDS} onEdit={onEdit} onArchive={onArchive} />,
-    )
+    const { getByRole } = await renderBrandList({
+      brands: BRANDS,
+      onEdit,
+      onArchive,
+    })
 
     await userEvent.click(getByRole('button', { name: /Edit Dark Shorts/i }))
     expect(onEdit).toHaveBeenCalledWith(BRANDS[0])
@@ -46,9 +78,11 @@ describe('BrandList', () => {
   })
 
   it('should render an empty state when there are no brands', async () => {
-    const { getByText } = await render(
-      <BrandList brands={[]} onEdit={vi.fn()} onArchive={vi.fn()} />,
-    )
+    const { getByText } = await renderBrandList({
+      brands: [],
+      onEdit: vi.fn(),
+      onArchive: vi.fn(),
+    })
 
     await expect.element(getByText(/No brands yet/i)).toBeInTheDocument()
   })

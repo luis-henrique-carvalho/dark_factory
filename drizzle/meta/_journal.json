@@ -15,6 +15,13 @@
       "when": 1783563380787,
       "tag": "0001_sparkling_silver_sable",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784084036474,
+      "tag": "0002_loud_terrax",
+      "breakpoints": true
     }
   ]
 }

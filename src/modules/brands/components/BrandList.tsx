@@ -1,4 +1,5 @@
-import { Archive, Pencil } from 'lucide-react'
+import { Archive, Pencil, Settings2 } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import {
@@ -88,6 +89,16 @@ export function BrandList({
             </dl>
           </CardContent>
           <CardFooter className="justify-end gap-2">
+            <Button asChild type="button" variant="secondary" size="sm">
+              <Link
+                to="/brands/$brandId/distribution-profiles"
+                params={{ brandId: brand.id }}
+                aria-label={`Manage distribution profiles for ${brand.name}`}
+              >
+                <Settings2 data-icon="inline-start" />
+                Profiles
+              </Link>
+            </Button>
             <Button
               type="button"
               variant="outline"

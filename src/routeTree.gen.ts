@@ -38,7 +38,11 @@ import { Route as ApiV1BrandsIndexRouteImport } from './routes/api/v1/brands/ind
 import { Route as ApiV1UsersMeRouteImport } from './routes/api/v1/users/me'
 import { Route as ApiV1UsersUserIdRouteImport } from './routes/api/v1/users/$userId'
 import { Route as ApiV1BrandsBrandIdRouteImport } from './routes/api/v1/brands/$brandId'
+import { Route as AuthenticatedBrandsBrandIdDistributionProfilesRouteImport } from './routes/_authenticated/brands/$brandId/distribution-profiles'
+import { Route as ApiV1BrandsBrandIdDistributionProfilesRouteImport } from './routes/api/v1/brands/$brandId/distribution-profiles'
 import { Route as ApiV1BrandsBrandIdArchiveRouteImport } from './routes/api/v1/brands/$brandId/archive'
+import { Route as ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteImport } from './routes/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId'
+import { Route as ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRouteImport } from './routes/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -191,12 +195,41 @@ const ApiV1BrandsBrandIdRoute = ApiV1BrandsBrandIdRouteImport.update({
   path: '/api/v1/brands/$brandId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedBrandsBrandIdDistributionProfilesRoute =
+  AuthenticatedBrandsBrandIdDistributionProfilesRouteImport.update({
+    id: '/brands/$brandId/distribution-profiles',
+    path: '/brands/$brandId/distribution-profiles',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiV1BrandsBrandIdDistributionProfilesRoute =
+  ApiV1BrandsBrandIdDistributionProfilesRouteImport.update({
+    id: '/distribution-profiles',
+    path: '/distribution-profiles',
+    getParentRoute: () => ApiV1BrandsBrandIdRoute,
+  } as any)
 const ApiV1BrandsBrandIdArchiveRoute =
   ApiV1BrandsBrandIdArchiveRouteImport.update({
     id: '/archive',
     path: '/archive',
     getParentRoute: () => ApiV1BrandsBrandIdRoute,
   } as any)
+const ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRoute =
+  ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteImport.update(
+    {
+      id: '/$distributionProfileId',
+      path: '/$distributionProfileId',
+      getParentRoute: () => ApiV1BrandsBrandIdDistributionProfilesRoute,
+    } as any,
+  )
+const ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute =
+  ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRouteImport.update(
+    {
+      id: '/archive',
+      path: '/archive',
+      getParentRoute: () =>
+        ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -221,12 +254,16 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks/': typeof AuthenticatedTasksIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
+  '/brands/$brandId/distribution-profiles': typeof AuthenticatedBrandsBrandIdDistributionProfilesRoute
   '/api/v1/brands/$brandId': typeof ApiV1BrandsBrandIdRouteWithChildren
   '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
   '/api/v1/users/me': typeof ApiV1UsersMeRoute
   '/api/v1/brands/': typeof ApiV1BrandsIndexRoute
   '/api/v1/users/': typeof ApiV1UsersIndexRoute
   '/api/v1/brands/$brandId/archive': typeof ApiV1BrandsBrandIdArchiveRoute
+  '/api/v1/brands/$brandId/distribution-profiles': typeof ApiV1BrandsBrandIdDistributionProfilesRouteWithChildren
+  '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId': typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteWithChildren
+  '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive': typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof authForgotPasswordRoute
@@ -250,12 +287,16 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/brands/$brandId/distribution-profiles': typeof AuthenticatedBrandsBrandIdDistributionProfilesRoute
   '/api/v1/brands/$brandId': typeof ApiV1BrandsBrandIdRouteWithChildren
   '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
   '/api/v1/users/me': typeof ApiV1UsersMeRoute
   '/api/v1/brands': typeof ApiV1BrandsIndexRoute
   '/api/v1/users': typeof ApiV1UsersIndexRoute
   '/api/v1/brands/$brandId/archive': typeof ApiV1BrandsBrandIdArchiveRoute
+  '/api/v1/brands/$brandId/distribution-profiles': typeof ApiV1BrandsBrandIdDistributionProfilesRouteWithChildren
+  '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId': typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteWithChildren
+  '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive': typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -283,12 +324,16 @@ export interface FileRoutesById {
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/brands/$brandId/distribution-profiles': typeof AuthenticatedBrandsBrandIdDistributionProfilesRoute
   '/api/v1/brands/$brandId': typeof ApiV1BrandsBrandIdRouteWithChildren
   '/api/v1/users/$userId': typeof ApiV1UsersUserIdRoute
   '/api/v1/users/me': typeof ApiV1UsersMeRoute
   '/api/v1/brands/': typeof ApiV1BrandsIndexRoute
   '/api/v1/users/': typeof ApiV1UsersIndexRoute
   '/api/v1/brands/$brandId/archive': typeof ApiV1BrandsBrandIdArchiveRoute
+  '/api/v1/brands/$brandId/distribution-profiles': typeof ApiV1BrandsBrandIdDistributionProfilesRouteWithChildren
+  '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId': typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteWithChildren
+  '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive': typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -315,12 +360,16 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/tasks/'
     | '/users/'
+    | '/brands/$brandId/distribution-profiles'
     | '/api/v1/brands/$brandId'
     | '/api/v1/users/$userId'
     | '/api/v1/users/me'
     | '/api/v1/brands/'
     | '/api/v1/users/'
     | '/api/v1/brands/$brandId/archive'
+    | '/api/v1/brands/$brandId/distribution-profiles'
+    | '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId'
+    | '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -344,12 +393,16 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/brands/$brandId/distribution-profiles'
     | '/api/v1/brands/$brandId'
     | '/api/v1/users/$userId'
     | '/api/v1/users/me'
     | '/api/v1/brands'
     | '/api/v1/users'
     | '/api/v1/brands/$brandId/archive'
+    | '/api/v1/brands/$brandId/distribution-profiles'
+    | '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId'
+    | '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive'
   id:
     | '__root__'
     | '/(auth)'
@@ -376,12 +429,16 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
+    | '/_authenticated/brands/$brandId/distribution-profiles'
     | '/api/v1/brands/$brandId'
     | '/api/v1/users/$userId'
     | '/api/v1/users/me'
     | '/api/v1/brands/'
     | '/api/v1/users/'
     | '/api/v1/brands/$brandId/archive'
+    | '/api/v1/brands/$brandId/distribution-profiles'
+    | '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId'
+    | '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -606,12 +663,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1BrandsBrandIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/brands/$brandId/distribution-profiles': {
+      id: '/_authenticated/brands/$brandId/distribution-profiles'
+      path: '/brands/$brandId/distribution-profiles'
+      fullPath: '/brands/$brandId/distribution-profiles'
+      preLoaderRoute: typeof AuthenticatedBrandsBrandIdDistributionProfilesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/v1/brands/$brandId/distribution-profiles': {
+      id: '/api/v1/brands/$brandId/distribution-profiles'
+      path: '/distribution-profiles'
+      fullPath: '/api/v1/brands/$brandId/distribution-profiles'
+      preLoaderRoute: typeof ApiV1BrandsBrandIdDistributionProfilesRouteImport
+      parentRoute: typeof ApiV1BrandsBrandIdRoute
+    }
     '/api/v1/brands/$brandId/archive': {
       id: '/api/v1/brands/$brandId/archive'
       path: '/archive'
       fullPath: '/api/v1/brands/$brandId/archive'
       preLoaderRoute: typeof ApiV1BrandsBrandIdArchiveRouteImport
       parentRoute: typeof ApiV1BrandsBrandIdRoute
+    }
+    '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId': {
+      id: '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId'
+      path: '/$distributionProfileId'
+      fullPath: '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId'
+      preLoaderRoute: typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteImport
+      parentRoute: typeof ApiV1BrandsBrandIdDistributionProfilesRoute
+    }
+    '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive': {
+      id: '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive'
+      path: '/archive'
+      fullPath: '/api/v1/brands/$brandId/distribution-profiles/$distributionProfileId/archive'
+      preLoaderRoute: typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRouteImport
+      parentRoute: typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRoute
     }
   }
 }
@@ -664,6 +749,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBrandsIndexRoute: typeof AuthenticatedBrandsIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedBrandsBrandIdDistributionProfilesRoute: typeof AuthenticatedBrandsBrandIdDistributionProfilesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -673,17 +759,52 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBrandsIndexRoute: AuthenticatedBrandsIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedBrandsBrandIdDistributionProfilesRoute:
+    AuthenticatedBrandsBrandIdDistributionProfilesRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteChildren {
+  ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute: typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute
+}
+
+const ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteChildren: ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteChildren =
+  {
+    ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute:
+      ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdArchiveRoute,
+  }
+
+const ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteWithChildren =
+  ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRoute._addFileChildren(
+    ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteChildren,
+  )
+
+interface ApiV1BrandsBrandIdDistributionProfilesRouteChildren {
+  ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRoute: typeof ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteWithChildren
+}
+
+const ApiV1BrandsBrandIdDistributionProfilesRouteChildren: ApiV1BrandsBrandIdDistributionProfilesRouteChildren =
+  {
+    ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRoute:
+      ApiV1BrandsBrandIdDistributionProfilesDistributionProfileIdRouteWithChildren,
+  }
+
+const ApiV1BrandsBrandIdDistributionProfilesRouteWithChildren =
+  ApiV1BrandsBrandIdDistributionProfilesRoute._addFileChildren(
+    ApiV1BrandsBrandIdDistributionProfilesRouteChildren,
+  )
+
 interface ApiV1BrandsBrandIdRouteChildren {
   ApiV1BrandsBrandIdArchiveRoute: typeof ApiV1BrandsBrandIdArchiveRoute
+  ApiV1BrandsBrandIdDistributionProfilesRoute: typeof ApiV1BrandsBrandIdDistributionProfilesRouteWithChildren
 }
 
 const ApiV1BrandsBrandIdRouteChildren: ApiV1BrandsBrandIdRouteChildren = {
   ApiV1BrandsBrandIdArchiveRoute: ApiV1BrandsBrandIdArchiveRoute,
+  ApiV1BrandsBrandIdDistributionProfilesRoute:
+    ApiV1BrandsBrandIdDistributionProfilesRouteWithChildren,
 }
 
 const ApiV1BrandsBrandIdRouteWithChildren =

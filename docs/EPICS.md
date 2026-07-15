@@ -189,7 +189,7 @@ Como usuário, quero arquivar marcas que não estou mais usando.
 
 ## Objetivo
 
-Criar perfis de distribuição para diferenciar YouTube Shorts, YouTube Long Form e formatos futuros.
+Criar templates de distribuição que definem como um conteúdo será preparado para uma plataforma e um formato específicos.
 
 ## Prioridade
 
@@ -197,52 +197,88 @@ Criar perfis de distribuição para diferenciar YouTube Shorts, YouTube Long For
 
 ## Descrição
 
-O sistema deve separar marca, conteúdo e formato de distribuição. Uma marca pode ter um perfil para Shorts e outro para vídeos longos.
-A modelagem adota uma relação de 1-para-Muitos entre projetos de conteúdo e vídeos renderizados. Isso permite que um único projeto de conteúdo seja renderizado em múltiplos formatos (Shorts em 9:16 e vídeo longo em 16:9), reaproveitando o mesmo roteiro, narração e ativos criados pela IA.
+O sistema separa marca, conteúdo, plataforma e formato. Uma marca pode possuir vários perfis de distribuição, como YouTube Shorts e YouTube Long Form.
+
+`platform` representa o destino externo, enquanto `content_format` representa o formato do conteúdo. Assim, o modelo pode evoluir para combinações como YouTube + Short, YouTube + Long, TikTok + Short e Instagram + Reel sem transformar cada combinação em uma plataforma diferente.
+
+Um projeto de conteúdo pode selecionar múltiplos perfis através de alvos de distribuição. Cada alvo representa uma versão desejada do projeto e pode gerar um ou mais vídeos renderizados.
 
 ## Entregáveis
 
-- Criar perfil de distribuição.
-- Configurar formato.
-- Configurar resolução.
-- Configurar aspect ratio.
-- Configurar duração alvo.
-- Configurar horários padrão de postagem.
-- Configurar tags e descrição padrão.
+- Criar, listar, editar e arquivar perfil de distribuição.
+- Configurar plataforma e formato.
+- Configurar resolução e aspect ratio.
+- Configurar duração mínima, máxima e alvo.
+- Configurar timezone e horários padrão de postagem.
+- Configurar templates de título e descrição.
+- Configurar tags e hashtags padrão.
+- Selecionar múltiplos perfis na criação de um projeto.
+- Preservar um snapshot da configuração usada por cada alvo do projeto.
 
-## Entidade principal
+## Entidades principais
 
 ```text
 distribution_profiles
+content_project_targets
 ```
 
 ## Perfis iniciais
 
 ```text
-youtube_short
-youtube_long
+platform: youtube
+content_format: short
+
+platform: youtube
+content_format: long
 ```
+
+`youtube_short` e `youtube_long` podem ser usados como slugs ou códigos internos, mas não representam plataformas distintas.
 
 ## User stories
 
-### US-012 — Criar perfil de Shorts
+### US-012 — Criar perfil de distribuição
 
-Como usuário, quero configurar um perfil de YouTube Shorts para gerar vídeos verticais curtos.
+Como usuário, quero criar um perfil de distribuição associado a uma marca, definindo plataforma, formato e configurações padrão.
 
-### US-013 — Criar perfil de vídeo longo
+### US-013 — Configurar perfis Shorts e Long Form
 
-Como usuário, quero configurar um perfil de vídeo longo para gerar vídeos horizontais maiores.
+Como usuário, quero configurar perfis de YouTube Shorts e YouTube Long Form com resoluções, proporções e durações diferentes.
 
 ### US-014 — Definir horários padrão
 
-Como usuário, quero definir horários padrão de postagem para facilitar o agendamento.
+Como usuário, quero definir timezone, dias e horários padrão de postagem para facilitar o agendamento.
+
+### US-014A — Selecionar múltiplos perfis no projeto
+
+Como usuário, quero selecionar Shorts e Long Form para um mesmo projeto e gerar versões diferentes reutilizando o mesmo conteúdo-base.
+
+### US-014B — Preservar configuração do projeto
+
+Como sistema, quero salvar um snapshot da configuração do perfil no alvo do projeto para que alterações futuras no perfil não modifiquem trabalhos antigos.
+
+## Regras de negócio
+
+- Um perfil pertence a uma única marca.
+- O slug deve ser único dentro da marca (`UNIQUE (brand_id, slug)`).
+- Uma marca pode ter vários perfis para a mesma combinação de plataforma e formato, desde que possuam slugs diferentes.
+- Perfil arquivado não pode ser selecionado em novos projetos.
+- Perfil arquivado pode continuar referenciado por projetos existentes.
+- O perfil fornece defaults; o horário efetivo pertence ao plano de publicação.
+- Cada alvo de projeto deve armazenar a configuração usada no momento da seleção.
+- Resolução, aspect ratio e duração devem ser validados antes da renderização.
+- Horários padrão devem incluir dias e timezone explícito.
+- Todo acesso a perfil deve validar que o usuário possui a marca associada.
 
 ## Critérios de aceite
 
-- Uma marca pode ter múltiplos perfis de distribuição.
-- Shorts e Long Form possuem configurações diferentes.
-- O perfil pode ser usado na criação de projetos.
-- O sistema não trata Shorts e Long Form como plataformas diferentes, mas como formatos diferentes.
+- Uma marca pode criar, editar, listar e arquivar múltiplos perfis.
+- Shorts e Long Form possuem configurações independentes.
+- Um projeto pode selecionar um ou mais perfis de distribuição.
+- A seleção cria alvos de distribuição vinculados ao projeto.
+- Cada alvo mantém um snapshot imutável da configuração selecionada.
+- O sistema não trata Shorts e Long Form como plataformas diferentes.
+- Perfil de outra marca não pode ser usado.
+- Perfil arquivado não aparece para novos projetos.
 
 ---
 
@@ -364,7 +400,7 @@ Um projeto de conteúdo é a unidade principal da fábrica. Ele agrupa ideia, ro
 - Listar projetos.
 - Editar projeto.
 - Selecionar marca.
-- Selecionar formato.
+- Selecionar um ou mais perfis de distribuição.
 - Definir tema.
 - Definir objetivo.
 - Definir status.
@@ -382,9 +418,9 @@ content_projects
 
 Como usuário, quero criar um projeto para produzir um novo vídeo.
 
-### US-022 — Escolher formato do projeto
+### US-022 — Escolher alvos de distribuição
 
-Como usuário, quero escolher entre YouTube Shorts e YouTube Long Form.
+Como usuário, quero escolher um ou mais perfis de distribuição para gerar versões do mesmo projeto em formatos diferentes.
 
 ### US-023 — Acompanhar status
 
@@ -393,7 +429,7 @@ Como usuário, quero acompanhar em qual etapa o projeto está.
 ## Critérios de aceite
 
 - Projeto pertence a uma marca.
-- Projeto possui formato.
+- Projeto possui um ou mais alvos de distribuição.
 - Projeto possui status.
 - Projeto pode evoluir pelos status da pipeline.
 - Projeto arquivado não entra na fila de produção.

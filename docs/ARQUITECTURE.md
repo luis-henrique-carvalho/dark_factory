@@ -241,6 +241,7 @@ src/
     scripts/
     reference-videos/
     media-assets/
+    content-project-targets/
     video-rendering/
     content-generation/
     platform-integrations/
@@ -252,6 +253,7 @@ src/
       distribution-profiles.ts
       platform-accounts.ts
       content-projects.ts
+      content-project-targets.ts
       scripts.ts
       media-assets.ts
       rendered-videos.ts
@@ -1034,19 +1036,23 @@ Exemplo:
 ```ts
 export const contentProjectsService = {
   async create({ userId, input }: CreateContentProjectCommand) {
-    const channel = await creatorChannelsRepository.findById(input.channelId)
+    const brand = await brandsRepository.findById(input.brandId)
 
     contentProjectsPolicy.ensureCanCreate({
       userId,
-      channel,
+      brand,
     })
 
     const project = await contentProjectsRepository.create({
       userId,
-      channelId: input.channelId,
+      brandId: input.brandId,
       topic: input.topic,
-      contentFormat: input.contentFormat,
       status: 'draft',
+    })
+
+    await contentProjectTargetsService.createMany({
+      contentProjectId: project.id,
+      distributionProfileIds: input.distributionProfileIds,
     })
 
     return contentProjectsMapper.toDto(project)
@@ -1079,7 +1085,7 @@ Exemplo:
 ```ts
 export const createContentProjectDto = z.object({
   topic: z.string().min(3),
-  contentFormat: z.enum(['youtube_short', 'youtube_long']),
+  distributionProfileIds: z.array(z.string().uuid()).min(1),
 })
 
 export type CreateContentProjectDto = z.infer<typeof createContentProjectDto>
@@ -1179,7 +1185,7 @@ export const contentProjectsMapper = {
       title: project.title,
       topic: project.topic,
       status: project.status,
-      contentFormat: project.contentFormat,
+      targets: project.targets,
       createdAt: project.createdAt.toISOString(),
     }
   },
@@ -1290,6 +1296,8 @@ POST   /api/v1/content-projects
 GET    /api/v1/content-projects/:id
 PATCH  /api/v1/content-projects/:id
 DELETE /api/v1/content-projects/:id
+POST   /api/v1/content-projects/:id/targets
+DELETE /api/v1/content-projects/:id/targets/:targetId
 ```
 
 ### 9.5 Content Project Commands
@@ -1637,7 +1645,6 @@ niche
 language
 default_tone
 default_video_style
-default_content_format
 status
 created_at
 updated_at
@@ -1648,15 +1655,21 @@ updated_at
 ```txt
 id
 brand_id
+name
+slug
 platform
 content_format
-default_title_style
+resolution_width
+resolution_height
+aspect_ratio
+min_duration_seconds
+max_duration_seconds
+target_duration_seconds
+timezone
+default_title_template
 default_description_template
 default_tags_json
 default_hashtags_json
-default_resolution
-default_aspect_ratio
-default_duration_target
 default_posting_times_json
 status
 created_at
@@ -1705,13 +1718,24 @@ niche
 language
 content_type
 content_goal
-content_format
 status
 created_at
 updated_at
 ```
 
-### 14.6 `scripts`
+### 14.6 `content_project_targets`
+
+```txt
+id
+content_project_id
+distribution_profile_id
+status
+config_snapshot_json
+created_at
+updated_at
+```
+
+### 14.7 `scripts`
 
 ```txt
 id
@@ -1728,7 +1752,7 @@ created_at
 updated_at
 ```
 
-### 14.7 `media_assets`
+### 14.8 `media_assets`
 
 ```txt
 id
@@ -1745,11 +1769,12 @@ created_at
 updated_at
 ```
 
-### 14.8 `rendered_videos`
+### 14.9 `rendered_videos`
 
 ```txt
 id
-content_project_id
+content_project_target_id
+platform
 content_format
 file_url
 duration_seconds
@@ -1763,11 +1788,12 @@ created_at
 updated_at
 ```
 
-### 14.9 `publication_plans`
+### 14.10 `publication_plans`
 
 ```txt
 id
 content_project_id
+content_project_target_id
 rendered_video_id
 brand_id
 status
@@ -1775,7 +1801,7 @@ created_at
 updated_at
 ```
 
-### 14.10 `platform_publications`
+### 14.11 `platform_publications`
 
 ```txt
 id
@@ -1800,7 +1826,7 @@ created_at
 updated_at
 ```
 
-### 14.11 `audit_logs`
+### 14.12 `audit_logs`
 
 ```txt
 id
@@ -1963,7 +1989,7 @@ export function useContentProjectForm() {
     resolver: zodResolver(contentProjectFormSchema),
     defaultValues: {
       topic: '',
-      contentFormat: 'youtube_short',
+      distributionProfileIds: [],
     },
   })
 
@@ -2401,16 +2427,22 @@ Exemplo:
 
 ```ts
 export const createContentProjectInputSchema = z.object({
-  creatorChannelId: z.string().uuid(),
+  brandId: z.string().uuid(),
   topic: z.string().min(3),
-  contentFormat: z.enum(['youtube_short', 'youtube_long']),
+  distributionProfileIds: z.array(z.string().uuid()).min(1),
   contentGoal: z.string().optional(),
 })
 
 export const createContentProjectResponseSchema = z.object({
   id: z.string().uuid(),
   topic: z.string(),
-  contentFormat: z.enum(['youtube_short', 'youtube_long']),
+  targets: z.array(
+    z.object({
+      id: z.string().uuid(),
+      distributionProfileId: z.string().uuid(),
+      status: z.string(),
+    }),
+  ),
   status: z.string(),
   createdAt: z.string(),
 })
@@ -2681,9 +2713,9 @@ A chave estrangeira `brand_id` está intencionalmente desnormalizada e presente 
 - Executar queries de filtragem extremamente rápidas na Agenda Editorial (calendário de postagens) por Marca.
 - Simplificar e acelerar a busca direta de perfis e métricas sem encadeamento de múltiplos JOINs custosos.
 
-### 31.2 Reaproveitamento Multiformato (1-para-Muitos em Vídeos Renderizados)
+### 31.2 Reaproveitamento Multiformato (Alvos e Vídeos Renderizados)
 
-A tabela `rendered_videos` possui relação de 1-para-Muitos com `content_projects`. Isso permite que um único projeto de conteúdo (com o mesmo roteiro e narração de base) possua múltiplos vídeos renderizados para formatos diferentes (ex: Shorts em 9:16 e vídeo longo em 16:9), promovendo o reaproveitamento nativo de assets.
+Um `content_project` pode possuir múltiplos `content_project_targets`, cada um apontando para um perfil de distribuição e preservando um snapshot da configuração selecionada. Cada alvo pode gerar um ou mais registros em `rendered_videos`, permitindo que um único projeto de conteúdo (com o mesmo roteiro e narração de base) produza formatos diferentes, como Shorts em 9:16 e vídeo longo em 16:9.
 
 ### 31.3 Criptografia Simétrica de Tokens de Acesso OAuth
 

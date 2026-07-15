@@ -123,6 +123,7 @@ publication_plans
 brands
 rendered_videos
 distribution_profiles
+content_project_targets
 ```
 
 Campos específicos do YouTube devem ficar em `platform_metadata_json` ou em tabelas complementares específicas, caso necessário.
@@ -217,7 +218,6 @@ brands
 - language
 - default_tone
 - default_video_style
-- default_content_format
 - status
 - created_at
 - updated_at
@@ -321,21 +321,20 @@ brand_platform_accounts
 
 ### Descrição
 
-Um projeto de conteúdo representa um vídeo em produção.
+Um projeto de conteúdo representa o conteúdo-base em produção. Ele pode ser distribuído em um ou mais formatos sem duplicar roteiro, narração e assets.
 
 ### Campos principais
 
 ```text
 content_projects
 - id
-- creator_channel_id
+- brand_id
 - title
 - topic
 - niche
 - language
 - content_type
 - content_goal
-- content_format
 - status
 - created_at
 - updated_at
@@ -353,11 +352,19 @@ affiliate_video
 documentary_style
 ```
 
-### Formatos iniciais
+### Alvos de distribuição
+
+Um projeto seleciona um ou mais perfis através de `content_project_targets`. O projeto não possui um único `content_format`.
 
 ```text
-youtube_short
-youtube_long
+content_project_targets
+- id
+- content_project_id
+- distribution_profile_id
+- status
+- config_snapshot_json
+- created_at
+- updated_at
 ```
 
 ### Status
@@ -381,7 +388,9 @@ archived
 ### Regras de negócio
 
 - Todo conteúdo deve pertencer a uma marca.
-- Todo conteúdo deve ter um formato de distribuição inicial.
+- Todo conteúdo deve ter pelo menos um alvo de distribuição.
+- Cada alvo deve referenciar um perfil ativo pertencente à marca do projeto.
+- A configuração do perfil deve ser copiada para `config_snapshot_json` no momento da seleção.
 - O conteúdo não pode ser publicado sem vídeo renderizado.
 - O conteúdo não pode ser publicado sem aprovação humana.
 - O conteúdo pode ter múltiplas versões de roteiro.
@@ -401,7 +410,7 @@ Permitir cadastrar vídeos de referência para análise criativa. O objetivo é 
 ```text
 reference_videos
 - id
-- creator_channel_id
+- brand_id
 - platform
 - url
 - external_video_id
@@ -531,7 +540,8 @@ Renderizar vídeos finais a partir do roteiro, narração, imagens/clipes, legen
 ```text
 rendered_videos
 - id
-- content_project_id
+- content_project_target_id
+- platform
 - content_format
 - file_url
 - duration_seconds
@@ -557,12 +567,12 @@ archived
 
 ### Regras de negócio
 
-- Vídeos longos e Shorts devem ser renderizados com perfis diferentes.
+- Vídeos longos e Shorts devem ser renderizados a partir de alvos e snapshots de configuração diferentes.
 - O vídeo final deve ser salvo em storage externo.
 - O sistema deve registrar checksum para evitar duplicidade.
 - Renderização deve rodar em worker/container, não dentro de request web.
 - Falhas de renderização devem permitir retry.
-- Um projeto pode ter mais de um vídeo renderizado.
+- Um alvo de distribuição pode ter mais de um vídeo renderizado, por exemplo após reprocessamento ou nova versão.
 
 ---
 
@@ -579,7 +589,7 @@ publication_plans
 - id
 - content_project_id
 - rendered_video_id
-- creator_channel_id
+- brand_id
 - status
 - created_at
 - updated_at
@@ -1295,7 +1305,6 @@ niche
 language
 default_tone
 default_video_style
-default_content_format
 status
 created_at
 updated_at
@@ -1337,20 +1346,33 @@ updated_at
 ```text
 id
 brand_id
+name
+slug
 platform
 content_format
-default_title_style
+resolution_width
+resolution_height
+aspect_ratio
+min_duration_seconds
+max_duration_seconds
+target_duration_seconds
+timezone
+default_title_template
 default_description_template
 default_tags_json
 default_hashtags_json
-default_resolution
-default_aspect_ratio
-default_duration_target
 default_posting_times_json
 status
 created_at
 updated_at
 ```
+
+Regras:
+
+- `UNIQUE (brand_id, slug)`.
+- `platform` representa o destino externo; `content_format` representa o formato.
+- O perfil é um template e pode ser arquivado sem quebrar projetos existentes.
+- `default_posting_times_json` deve conter dias, horário e timezone.
 
 ## 17.5 `content_projects`
 
@@ -1363,13 +1385,28 @@ niche
 language
 content_type
 content_goal
-content_format
 status
 created_at
 updated_at
 ```
 
-## 17.6 `reference_videos`
+Um projeto não possui um único formato. Ele se relaciona a um ou mais alvos de distribuição.
+
+## 17.6 `content_project_targets`
+
+```text
+id
+content_project_id
+distribution_profile_id
+status
+config_snapshot_json
+created_at
+updated_at
+```
+
+`config_snapshot_json` preserva a configuração efetivamente escolhida no projeto, mesmo que o perfil seja editado posteriormente.
+
+## 17.7 `reference_videos`
 
 ```text
 id
@@ -1389,7 +1426,7 @@ created_at
 updated_at
 ```
 
-## 17.7 `scripts`
+## 17.8 `scripts`
 
 ```text
 id
@@ -1406,7 +1443,7 @@ created_at
 updated_at
 ```
 
-## 17.8 `media_assets`
+## 17.9 `media_assets`
 
 ```text
 id
@@ -1423,11 +1460,12 @@ created_at
 updated_at
 ```
 
-## 17.9 `rendered_videos`
+## 17.10 `rendered_videos`
 
 ```text
 id
-content_project_id
+content_project_target_id
+platform
 content_format
 file_url
 duration_seconds
@@ -1441,11 +1479,12 @@ created_at
 updated_at
 ```
 
-## 17.10 `publication_plans`
+## 17.11 `publication_plans`
 
 ```text
 id
 content_project_id
+content_project_target_id
 rendered_video_id
 brand_id
 status
@@ -1453,7 +1492,7 @@ created_at
 updated_at
 ```
 
-## 17.11 `platform_publications`
+## 17.12 `platform_publications`
 
 ```text
 id
@@ -1478,7 +1517,7 @@ created_at
 updated_at
 ```
 
-## 17.12 `audit_logs`
+## 17.13 `audit_logs`
 
 ```text
 id
@@ -1490,12 +1529,12 @@ metadata_json
 created_at
 ```
 
-## 17.13 Diretrizes de Design e Modelagem de Dados
+## 17.14 Diretrizes de Design e Modelagem de Dados
 
 Para apoiar a publicação automatizada e multiplataforma de conteúdos de forma segura e performática, as seguintes diretrizes estruturais são adotadas na modelagem física do banco de dados:
 
 1. **Desnormalização de `brand_id`:** O `brand_id` (identificador da marca) está presente de forma desnormalizada e redundante em tabelas como `publication_plans` e `distribution_profiles`. Isso serve para otimizar queries e filtros de performance da Agenda Editorial (calendário de postagens) por Marca na interface, evitando JOINs custosos.
-2. **Reaproveitamento Multiformato:** A relação `1-para-Muitos` entre `content_projects` e `rendered_videos` permite que um único projeto de conteúdo (mesmo roteiro, narração e assets) tenha múltiplos vídeos renderizados em diferentes proporções e resoluções (ex: 9:16 para Shorts e 16:9 para vídeos longos), permitindo o reaproveitamento nativo de assets de geração por IA.
+2. **Reaproveitamento Multiformato:** A relação entre `content_projects`, `content_project_targets` e `rendered_videos` permite que um único projeto de conteúdo (mesmo roteiro, narração e assets) tenha múltiplos alvos e vídeos renderizados em diferentes proporções e resoluções (ex: 9:16 para Shorts e 16:9 para vídeos longos), permitindo o reaproveitamento nativo de assets de geração por IA.
 3. **Segurança de Tokens:** Os tokens de plataformas em `platform_accounts` devem ser armazenados criptografados usando criptografia simétrica AES-256 baseada em uma chave secreta fornecida via variável de ambiente (`ENCRYPTION_KEY`).
 4. **Mapeamento Flexível de Canal/Conta:** A tabela de associação `brand_platform_accounts` permite vincular a Marca a um destino de publicação (`external_channel_id` específico) utilizando uma conta autenticada (`platform_account_id`), suportando cenários em que uma única credencial gerencia múltiplos canais.
 

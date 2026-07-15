@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core'
 import { user } from './users.ts'
+import { distributionProfile } from './distribution-profiles.ts'
 
 export const brand = pgTable(
   'brand',
@@ -22,9 +23,10 @@ export const brand = pgTable(
   (table) => [index('brand_userId_idx').on(table.userId)],
 )
 
-export const brandRelations = relations(brand, ({ one }) => ({
+export const brandRelations = relations(brand, ({ one, many }) => ({
   user: one(user, {
     fields: [brand.userId],
     references: [user.id],
   }),
+  distributionProfiles: many(distributionProfile),
 }))
